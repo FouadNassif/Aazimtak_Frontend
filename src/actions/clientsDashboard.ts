@@ -8,7 +8,6 @@ export async function getDashboardData({
 }: {
   userId: number;
 }): Promise<any> {
-  console.log(userId);
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post("/dashboard", {
