@@ -6,12 +6,14 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+import DashboardClientLayout from "@/layouts/DashboardClientLayout"
 
 export default function addGuests() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   };
   return (
+    <DashboardClientLayout>
     <form onSubmit={handleSubmit}>
       <Box
         sx={{
@@ -126,5 +128,6 @@ export default function addGuests() {
         </Box>
       </Box>
     </form>
+    </DashboardClientLayout>
   );
 }

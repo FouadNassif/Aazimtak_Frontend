@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthProvider";
-import DashboardNav from "../../components/Dashboard/DashboardNav";
+import DashboardClientLayout from "@/layouts/DashboardClientLayout";
 import {
   Box,
   CircularProgress,
@@ -78,122 +78,124 @@ export default function Dashboard() {
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <DashboardNav />
-      <Typography variant="h4" sx={{ mt: 3, fontWeight: "bold" }}>
-        Wedding Dashboard
-      </Typography>
-      <Typography variant="subtitle1" sx={{ color: "gray", mb: 3 }}>
-        Track your wedding guest status and progress
-      </Typography>
+    <DashboardClientLayout>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h4" sx={{ mt: 3, fontWeight: "bold" }}>
+          Wedding Dashboard
+        </Typography>
+        <Typography variant="subtitle1" sx={{ color: "gray", mb: 3 }}>
+          Track your wedding guest status and progress
+        </Typography>
 
-      {/* Stats Section */}
-      <Grid container spacing={3} sx={{ maxWidth: 1100 }}>
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ boxShadow: 3 }}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Avatar sx={{ bgcolor: "#4caf50", mx: "auto", mb: 1 }}>
-                <GroupIcon />
-              </Avatar>
-              <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-                {dashboardData?.total_guests}
-              </Typography>
-              <Typography>Total Guests</Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography color="text.secondary">
-                {dashboardData?.total_people} People +{" "}
-                {dashboardData?.total_kids} Kids
-              </Typography>
-            </CardContent>
-          </Card>
+        {/* Stats Section */}
+        <Grid container spacing={3} sx={{ maxWidth: 1100 }}>
+          <Grid item xs={12} sm={4}>
+            <Card sx={{ boxShadow: 3 }}>
+              <CardContent sx={{ textAlign: "center" }}>
+                <Avatar sx={{ bgcolor: "#4caf50", mx: "auto", mb: 1 }}>
+                  <GroupIcon />
+                </Avatar>
+                <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+                  {dashboardData?.total_guests}
+                </Typography>
+                <Typography>Total Guests</Typography>
+                <Divider sx={{ my: 1 }} />
+                <Typography color="text.secondary">
+                  {dashboardData?.total_people} People +{" "}
+                  {dashboardData?.total_kids} Kids
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Card sx={{ boxShadow: 3 }}>
+              <CardContent sx={{ textAlign: "center" }}>
+                <Avatar sx={{ bgcolor: "#2196f3", mx: "auto", mb: 1 }}>
+                  <PeopleIcon />
+                </Avatar>
+                <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+                  {dashboardData?.attending_count}
+                </Typography>
+                <Typography>Attending</Typography>
+                <Divider sx={{ my: 1 }} />
+                <Typography color="text.secondary">
+                  {dashboardData?.attending_percentage.toFixed(1)}% of Guests
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <Card sx={{ boxShadow: 3 }}>
+              <CardContent sx={{ textAlign: "center" }}>
+                <Avatar sx={{ bgcolor: "#f44336", mx: "auto", mb: 1 }}>
+                  <PersonOffIcon />
+                </Avatar>
+                <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+                  {dashboardData?.not_attending_count}
+                </Typography>
+                <Typography>Not Attending</Typography>
+                <Divider sx={{ my: 1 }} />
+                <Typography color="text.secondary">
+                  {dashboardData?.not_attending_percentage.toFixed(1)}% of
+                  Guests
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
 
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ boxShadow: 3 }}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Avatar sx={{ bgcolor: "#2196f3", mx: "auto", mb: 1 }}>
-                <PeopleIcon />
-              </Avatar>
-              <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-                {dashboardData?.attending_count}
-              </Typography>
-              <Typography>Attending</Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography color="text.secondary">
-                {dashboardData?.attending_percentage.toFixed(1)}% of Guests
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ boxShadow: 3 }}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Avatar sx={{ bgcolor: "#f44336", mx: "auto", mb: 1 }}>
-                <PersonOffIcon />
-              </Avatar>
-              <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-                {dashboardData?.not_attending_count}
-              </Typography>
-              <Typography>Not Attending</Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography color="text.secondary">
-                {dashboardData?.not_attending_percentage.toFixed(1)}% of Guests
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Charts Section */}
-      <Box display={"flex"} sx={{ gap: 3, mt: 5 }}>
-        <BarChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: ["Attending", "Pending", "Not Attending"],
-            },
-          ]}
-          series={[
-            {
-              data: [
-                dashboardData?.attending_count,
-                dashboardData?.pending_count,
-                dashboardData?.not_attending_count,
-              ],
-              color: "#1976d2",
-            },
-          ]}
-          barLabel="value"
-          width={500}
-          height={300}
-        />
-        <BarChart
-          xAxis={[
-            {
-              scaleType: "band",
-              data: ["People", "Kids"],
-            },
-          ]}
-          series={[
-            {
-              data: [dashboardData?.total_people, dashboardData?.total_kids],
-              color: "#ff9800",
-            },
-          ]}
-          barLabel="value"
-          width={500}
-          height={300}
-        />
+        {/* Charts Section */}
+        <Box display={"flex"} sx={{ gap: 3, mt: 5 }}>
+          <BarChart
+            xAxis={[
+              {
+                scaleType: "band",
+                data: ["Attending", "Pending", "Not Attending"],
+              },
+            ]}
+            series={[
+              {
+                data: [
+                  dashboardData?.attending_count,
+                  dashboardData?.pending_count,
+                  dashboardData?.not_attending_count,
+                ],
+                color: "#1976d2",
+              },
+            ]}
+            barLabel="value"
+            width={500}
+            height={300}
+          />
+          <BarChart
+            xAxis={[
+              {
+                scaleType: "band",
+                data: ["People", "Kids"],
+              },
+            ]}
+            series={[
+              {
+                data: [dashboardData?.total_people, dashboardData?.total_kids],
+                color: "#ff9800",
+              },
+            ]}
+            barLabel="value"
+            width={500}
+            height={300}
+          />
+        </Box>
       </Box>
-    </Box>
+    </DashboardClientLayout>
   );
 }

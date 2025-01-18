@@ -8,65 +8,36 @@ import {
   IconButton,
   Typography,
   Divider,
-  Link,
   Collapse,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
-import { useAuth } from "@/context/AuthProvider";
-import Navlinks from "@/components/Dashboard/NavLinks";
-import { useTheme } from "@/context/theme-context"; // Import the theme hook
+import { useTheme } from "@/context/theme-context";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { logout } from "@/actions/auth";
+import Navlinks from "@/components/Dashboard/NavLinks";
 
-export default function DashboardNav() {
-  const { isAuth, user } = useAuth();
-  const { toggleTheme, mode } = useTheme(); // Get the toggleTheme and mode from context
+export default function DashboardNavBase({ title, username, links, onLogout }) {
+  const { toggleTheme, mode } = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [guestsOpen, setGuestsOpen] = useState(false);
-  const [weddingOpen, setWeddingOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState(null);
 
-  async function sucesslogout() {
-    await logout();
-    router.push("/");
-  }
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
-  // Toggle the main drawer
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
-  };
-
-  // Toggle each submenu
-  const toggleGuests = () => {
-    setGuestsOpen(!guestsOpen);
-    setWeddingOpen(false);
-    setAccountOpen(false);
-  };
-
-  const toggleWedding = () => {
-    setWeddingOpen(!weddingOpen);
-    setGuestsOpen(false);
-    setAccountOpen(false);
-  };
-
-  const toggleAccount = () => {
-    setAccountOpen(!accountOpen);
-    setWeddingOpen(false);
-    setGuestsOpen(false);
+  const toggleMenu = (menu) => {
+    setActiveMenu(activeMenu === menu ? null : menu);
   };
 
   return (
     <div>
-      {/* Button close to the left */}
+      {/* Main Menu Icon */}
       <IconButton
         onClick={toggleDrawer}
         sx={{
           position: "fixed",
-          left: "20px", // Closer to the left
+          left: "20px",
           top: "50%",
           transform: "translateY(-50%)",
           backgroundColor: "#00BFFF",
@@ -84,7 +55,7 @@ export default function DashboardNav() {
         onClick={toggleTheme}
         sx={{
           position: "fixed",
-          right: "20px", // Position the button on the right side
+          right: "20px",
           top: "50%",
           transform: "translateY(-50%)",
           backgroundColor: "#00BFFF",
@@ -94,8 +65,7 @@ export default function DashboardNav() {
           zIndex: 1000,
         }}
       >
-        {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}{" "}
-        {/* Toggle icon */}
+        {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
       </IconButton>
 
       {/* Drawer Sidebar */}
@@ -125,10 +95,10 @@ export default function DashboardNav() {
               fontWeight: "bold",
             }}
           >
-            AAZIMTAK
+            {title}
           </Typography>
           <Typography
-            variant="p"
+            component="p"
             sx={{
               fontSize: "15px",
               padding: "16px",
@@ -137,55 +107,55 @@ export default function DashboardNav() {
               fontWeight: "bold",
             }}
           >
-            Welcome {user.username}
+            Welcome, {username}
           </Typography>
           <Divider sx={{ backgroundColor: "#333" }} />
 
           <List>
-            <Navlinks text={"Dashboard"} link={"/dashboard"} />
+            {links.map(({ text, link, subLinks }, index) => (
+              <div key={index}>
+                <ListItem
+                  button
+                  onClick={() => toggleMenu(text)}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "#1a2238" },
+                  }}
+                >
+                  <ListItemText primary={text} />
+                  {subLinks ? (
+                    activeMenu === text ? (
+                      <ExpandLess />
+                    ) : (
+                      <ExpandMore />
+                    )
+                  ) : null}
+                </ListItem>
 
-            {/* Guests Menu with Dropdown */}
-            <ListItem onClick={toggleGuests} sx={{ cursor: "pointer" }}>
-              <ListItemText primary="Guests" />
-              {guestsOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={guestsOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Navlinks text={"Show Guests"} link={"/dashboard/guests"} />
-                <Navlinks text={"Add Guests"} link={"/dashboard/guests/add"} />
-              </List>
-            </Collapse>
-
-            {/* Wedding Menu with Dropdown */}
-            <ListItem button onClick={toggleWedding}>
-              <ListItemText primary="Wedding" />
-              {weddingOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={weddingOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Navlinks
-                  text={"Edit Wedding"}
-                  link={"/dashboard/wedding/edit"}
-                />
-                <Navlinks
-                  text={"Show Wedding"}
-                  link={"/dashboard/wedding/show"}
-                />
-              </List>
-            </Collapse>
-
-            {/* Account Menu with Dropdown */}
-            <ListItem button onClick={toggleAccount}>
-              <ListItemText primary="Account" />
-              {accountOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={accountOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <Navlinks text={"Edit Account"} link={"/dashboard/account"} />
-                <ListItemText onClick={() => sucesslogout} primary="Log Out" />
-              </List>
-            </Collapse>
+                {/* Submenu */}
+                {subLinks && (
+                  <Collapse
+                    in={activeMenu === text}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List component="div" disablePadding>
+                      {subLinks.map((subLink, subIndex) => (
+                        <Navlinks
+                          key={subIndex}
+                          text={subLink.text}
+                          link={subLink.link}
+                        />
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </div>
+            ))}
           </List>
+
+          {/* Logout */}
+          <ListItemText onClick={() => sucesslogout} primary="Log Out" />
         </Box>
       </Drawer>
     </div>

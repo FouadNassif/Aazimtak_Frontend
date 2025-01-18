@@ -6,7 +6,7 @@ import { createContext } from "react";
 const AuthContext = createContext<{
   user: User | null;
   isAuth: boolean;
-}>({ user: null, isAuth: false });
+}>({ user: null, isAuth: false});
 
 interface AuthContextProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ interface AuthContextProps {
   isAuth: boolean;
 }
 
-function AuthProvider({ children, user, isAuth }: AuthContextProps) {
+function AuthProvider({ children, user, isAuth}: AuthContextProps) {
   return (
     <AuthContext.Provider value={{ user, isAuth }}>
       {children}

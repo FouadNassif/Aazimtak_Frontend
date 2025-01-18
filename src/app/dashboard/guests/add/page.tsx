@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthProvider";
-import DashboardNav from "@/components/Dashboard/DashboardNav";
+import DashboardClientLayout from "@/layouts/DashboardClientLayout"
 import {
   Box,
   TextField,
@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/useToast";
 import { addGuest } from "@/actions/clientsDashboard";
 
 export default function Guests() {
-  const { isAuth, user, role } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   const [guestName, setGuestName] = useState<string>("");
@@ -27,26 +27,18 @@ export default function Guests() {
   const { showError, showSuccess } = useToast();
 
   useEffect(() => {
-    if (!isAuth) {
-      router.push("/login");
-    }
-
-    if (guestName == "" || numberOfPeople == 0) {
+    if (guestName === "" || numberOfPeople === 0) {
       setDisableSubmit(true);
     } else {
       setDisableSubmit(false);
     }
-  }, [isAuth, user?.id, guestName, numberOfPeople, numberOfKids, router, role]);
+  }, [guestName, numberOfPeople]);
 
-  if (!isAuth) {
-    return null;
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     setLoading(true);
     e.preventDefault();
 
-    if (user?.id === undefined) {
+    if (!user?.id) {
       showError("User ID is undefined. Please log in again.");
       setLoading(false);
       return;
@@ -61,23 +53,21 @@ export default function Guests() {
       });
 
       if (result?.guest_Added) {
-        setLoading(false);
         showSuccess("Guest Added Successfully!");
         router.push("/dashboard/guests");
       }
     } catch (err) {
+      showError(
+        err.response?.data?.error ??
+          "Failed to add guest. Check if the name already exists."
+      );
+    } finally {
       setLoading(false);
-      if (err.response?.data?.error) {
-        showError(err.response.data.error);
-      } else {
-        showError("Failed to add guest. Check if the name already exists.");
-      }
     }
   };
 
   return (
-    <>
-      <DashboardNav />
+    <DashboardClientLayout>
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -125,9 +115,7 @@ export default function Guests() {
             <TextField
               label="Guest Name"
               value={guestName}
-              onChange={(e) => {
-                setGuestName(e.target.value);
-              }}
+              onChange={(e) => setGuestName(e.target.value)}
               fullWidth
               variant="outlined"
               sx={{
@@ -160,10 +148,7 @@ export default function Guests() {
               label="Number of Kids"
               type="number"
               value={numberOfKids}
-              onChange={(e) => {
-                setNumberOfKids(Number(e.target.value));
-                e.target.value = numberOfKids;
-              }}
+              onChange={(e) => setNumberOfKids(Number(e.target.value))}
               fullWidth
               variant="outlined"
               sx={{
@@ -192,6 +177,6 @@ export default function Guests() {
           </Box>
         </Box>
       </form>
-    </>
+    </DashboardClientLayout>
   );
 }

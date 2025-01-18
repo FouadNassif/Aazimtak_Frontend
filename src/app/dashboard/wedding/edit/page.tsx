@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/context/AuthProvider";
 import { getWeddingData, saveWeddingData } from "@/actions/clientsDashboard";
+import AuthLayout from "@/layouts/AuthLayout";
+import DashboardClientLayout from "@/layouts/DashboardClientLayout"
 
 export default function EditWedding() {
   const { isAuth, user } = useAuth();
@@ -42,10 +44,6 @@ export default function EditWedding() {
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    if (!isAuth) {
-      router.push("/login");
-    }
-
     const fetchWeddingData = async () => {
       setLoading(true); // Start loading
       try {
@@ -98,8 +96,7 @@ export default function EditWedding() {
   };
 
   return (
-    <>
-      <DashboardNav />
+    <DashboardClientLayout>
       <Box
         sx={{
           display: "flex",
@@ -253,6 +250,6 @@ export default function EditWedding() {
           </Paper>
         )}
       </Box>
-    </>
+    </DashboardClientLayout>
   );
 }

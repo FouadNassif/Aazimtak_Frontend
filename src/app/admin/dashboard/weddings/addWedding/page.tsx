@@ -3,6 +3,8 @@
 import DynamicForm from "@/components/Dashboard/FormLayout";
 import { addWeddingAPI } from "@/actions/adminDashboard";
 import { useToast } from "@/hooks/useToast";
+import AuthLayout from "@/layouts/AuthLayout";
+import DashboardNavBase from "@/components/Dashboard/DashboardNav";
 const AddWedding: React.FC = () => {
   const formFields = [
     {
@@ -49,6 +51,25 @@ const AddWedding: React.FC = () => {
     },
   ];
 
+  const adminLinks = [
+    { text: "Dashboard", link: "/admin/dashboard" },
+    {
+      text: "Manage Users",
+      subLinks: [
+        { text: "View Users", link: "/admin/users" },
+        { text: "Add User", link: "/admin/users/add" },
+      ],
+    },
+    {
+      text: "Site Settings",
+      subLinks: [
+        { text: "General Settings", link: "/admin/settings/general" },
+        { text: "Appearance", link: "/admin/settings/appearance" },
+      ],
+    },
+    { text: "Reports", link: "/admin/reports" },
+  ];
+
   const { showError, showSuccess } = useToast();
 
   const handleSubmit = async (data: Record<string, any>) => {
@@ -64,7 +85,20 @@ const AddWedding: React.FC = () => {
     console.log("Login Data:", data);
   };
 
-  return <DynamicForm fields={formFields} onSubmit={handleSubmit} />;
+  return (
+    <AuthLayout requiredRole="admin">
+      <DashboardNavBase
+        title="Admin Panel"
+        username="admin"
+        links={adminLinks}
+        onLogout={async () => {
+          await logout();
+          router.push("/");
+        }}
+      />
+      <DynamicForm fields={formFields} onSubmit={handleSubmit} />{" "}
+    </AuthLayout>
+  );
 };
 
 export default AddWedding;

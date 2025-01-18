@@ -1,20 +1,13 @@
 "use client";
 
 import { useAuth } from "@/context/AuthProvider";
-import DashboardNav from "../../../components/Dashboard/DashboardNav";
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  Card,
-  CardContent,
-} from "@mui/material";
-import { PieChart, BarChart } from "@mui/x-charts";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getAllGuests } from "@/actions/clientsDashboard";
 import { useToast } from "@/hooks/useToast";
 import { DataGrid } from "@mui/x-data-grid";
+import DashboardClientLayout from "@/layouts/DashboardClientLayout";
 
 export default function Guests() {
   const { isAuth, user } = useAuth();
@@ -34,7 +27,7 @@ export default function Guests() {
       }
 
       try {
-        const result = await getAllGuests({ userId: user.id });
+        const result = await getAllGuests({ userId: user?.id });
         if (result) {
           setAllGuests(result);
           console.log(result.guests);
@@ -59,16 +52,10 @@ export default function Guests() {
       }
     };
 
-    if (!isAuth) {
-      router.push("/login");
-    } else if (!isDataFetched) {
+    if (!isDataFetched) {
       fetchDashboardData();
     }
   }, [isAuth, user?.id, router, showError, isDataFetched]);
-
-  if (!isAuth) {
-    return null;
-  }
 
   if (isLoading) {
     return (
@@ -95,39 +82,42 @@ export default function Guests() {
   ];
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <DashboardNav />
-
-      <Typography sx={{
-        fontSize: "25px",
-        fontWeight: "600",
-        my: 5,
-      }}>
-        ALL GUESTS
-      </Typography>
-
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pagination
-        pageSizeOptions={[10, 20, 30, 40, 50]} // Replaces rowsPerPageOptions
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 10, // Default 10 rows per page
-              page: 0, // Start at the first page
-            },
-          },
+    <DashboardClientLayout>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
-    </Box>
+      >
+
+        <Typography
+          sx={{
+            fontSize: "25px",
+            fontWeight: "600",
+            my: 5,
+          }}
+        >
+          ALL GUESTS
+        </Typography>
+
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pagination
+          pageSizeOptions={[10, 20, 30, 40, 50]} // Replaces rowsPerPageOptions
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10, // Default 10 rows per page
+                page: 0, // Start at the first page
+              },
+            },
+          }}
+        />
+      </Box>
+    </DashboardClientLayout>
   );
 }
