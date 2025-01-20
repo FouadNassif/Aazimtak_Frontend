@@ -19,8 +19,9 @@ const DashboardClientLayout = ({ children }) => {
     {
       text: "Wedding",
       subLinks: [
-        { text: "Show Wedding", link: "/dashboard/wedding/edit" },
         { text: "Edit Wedding", link: "/dashboard/wedding/edit" },
+        { text: "Edit Wedding Images", link: "/dashboard/wedding/edit/images" },
+        { text: "Show Wedding", link: "/dashboard/wedding/show" },
       ],
     },
     {
