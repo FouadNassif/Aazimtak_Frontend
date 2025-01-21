@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import React from "react";
 
 interface BibleVerseProps {
@@ -7,7 +8,7 @@ interface BibleVerseProps {
 
 const BibleVerse: React.FC<BibleVerseProps> = ({ verse, reference }) => {
   return (
-    <div
+    <Box
       style={{
         width: "100%",
         display: "flex",
@@ -16,6 +17,7 @@ const BibleVerse: React.FC<BibleVerseProps> = ({ verse, reference }) => {
         alignItems: "center",
         textAlign: "center",
       }}
+      marginTop={25}
     >
       <img
         src="/assets/svg/quote.svg"
@@ -26,7 +28,7 @@ const BibleVerse: React.FC<BibleVerseProps> = ({ verse, reference }) => {
         {verse}
       </p>
       <p>{reference}</p>
-    </div>
+    </Box>
   );
 };
 

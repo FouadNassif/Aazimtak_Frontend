@@ -5,12 +5,6 @@ import { uploadImages, getAllUserImages } from "@/actions/UploadImages"; // Adju
 import { useAuth } from "@/context/AuthProvider";
 import Image from "next/image";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
-import ImagesLayout5 from "@/components/Card/ImagesLayout5";
-import Countdown from "@/components/Card/CountDown";
-import DateDisplay from "@/components/Card/DateDisplay";
-import BibleVerse from "@/components/Card/BibbleVerse";
-import ImagesLayout2 from "@/components/Card/ImagesLayout2";
-import WeddingDetails from "@/components/Card/WeddingDetails";
 
 const ImageUpload: React.FC = () => {
   const { isAuth, user } = useAuth();
@@ -71,57 +65,6 @@ const ImageUpload: React.FC = () => {
 
   return (
     <DashboardClientLayout>
-      <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
-      />
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        marginBottom={25}
-      >
-        <BibleVerse
-          verse="Therefore what God has joined together, let no one separate."
-          reference="Mark 12:9"
-        />
-        <DateDisplay date="2025-03-21" />
-        <Countdown targetDate="2025-03-21" />
-      </Box>
-      <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
-      />
-      <WeddingDetails
-        weddingDetail={{
-          type: "Wedding Ceremony",
-          time: "10:39:00",
-          place: "Garden of Edeewdwddd",
-          city: "Zgharta",
-          maps: "dewdwdwdwdw",
-        }}
-      />
-      <ImagesLayout2
-        image1="/assets/img/Welcome.jpg"
-        image2="/assets/img/Support.jpg"
-      />
-
-      <WeddingDetails
-        weddingDetail={{
-          type: "Wedding Ceremony",
-          time: "10:39:00",
-          place: "Garden of Edeewdwddd",
-          city: "Zgharta",
-          maps: "dewdwdwdwdw",
-        }}
-      />
       <Box sx={{ padding: "20px", textAlign: "center" }}>
         <Typography variant="h6">Upload Your Wedding Images</Typography>
         <input
