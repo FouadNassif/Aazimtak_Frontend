@@ -6,15 +6,21 @@ import { LaravelInstance } from "./axios";
 export async function getWeddingCardDetails({
   wedding_id,
   guest_name,
+  groom_name,
+  bride_name,
 }: {
   wedding_id: number;
   guest_name: string;
+  groom_name: string;
+  bride_name: string;
 }): Promise<any> {
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post("/wedding/showWeddingCard", {
       wedding_id: wedding_id,
       guest_name: guest_name,
+      groom_name: groom_name,
+      bride_name: bride_name,
     });
 
     if (response.status !== 200) {
