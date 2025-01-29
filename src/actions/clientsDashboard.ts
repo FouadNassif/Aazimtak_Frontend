@@ -1,29 +1,31 @@
 "use server";
-
-import { cookies } from "next/headers";
 import { LaravelInstance } from "./axios";
+
+async function handleRequest(endpoint: string, data: object): Promise<any> {
+  try {
+    const axiosClient = await LaravelInstance();
+    const response = await axiosClient.post(endpoint, data);
+
+    if (response.status !== 200) {
+      throw new Error(
+        `Request to ${endpoint} failed. HTTP Status: ${response.status}`
+      );
+    }
+
+    return response.data;
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    console.error(`Error in API call to ${endpoint}:`, errorMessage);
+    throw new Error(errorMessage);
+  }
+}
 
 export async function getDashboardData({
   userId,
 }: {
   userId: number;
 }): Promise<any> {
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/dashboard", {
-      userId: userId,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch dashboard data: " + response.status);
-    }
-
-    return response.data; // Return the dashboard data
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error fetching dashboard data:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  return await handleRequest("/dashboard", { userId });
 }
 
 export async function getAllGuests({
@@ -31,23 +33,8 @@ export async function getAllGuests({
 }: {
   userId: number;
 }): Promise<any> {
-  console.log(userId);
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/dashboard/guests", {
-      userId: userId,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch guests data: " + response.status);
-    }
-
-    return response.data; // Return the dashboard data
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error fetching guests data:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  console.log(`Fetching guests for userId: ${userId}`);
+  return await handleRequest("/dashboard/guests", { userId });
 }
 
 export async function addGuest({
@@ -61,25 +48,12 @@ export async function addGuest({
   numberOfPeople: number;
   numberOfKids: number;
 }): Promise<any> {
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/dashboard/guests/add", {
-      userId: userId,
-      guestName: guestName,
-      numberOfPeople: numberOfPeople,
-      numberOfKids: numberOfKids,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to add guest: " + response.status);
-    }
-
-    return response.data; // Return the response data
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error adding guest:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  return await handleRequest("/dashboard/guests/add", {
+    userId,
+    guestName,
+    numberOfPeople,
+    numberOfKids,
+  });
 }
 
 export async function editAccount({
@@ -93,25 +67,12 @@ export async function editAccount({
   old_password: string;
   password: string;
 }): Promise<any> {
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/dashboard/account/edit", {
-      userId: userId,
-      username: username,
-      old_password: old_password,
-      password: password,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to edit account: " + response.status);
-    }
-
-    return response.data; // Return the response data
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error editing account:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  return await handleRequest("/dashboard/account/edit", {
+    userId,
+    username,
+    old_password,
+    password,
+  });
 }
 
 export async function getWeddingData({
@@ -119,22 +80,7 @@ export async function getWeddingData({
 }: {
   userId: number;
 }): Promise<any> {
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/dashboard/wedding/getData", {
-      userId: userId,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch wedding data: " + response.status);
-    }
-
-    return response.data; // Return the response data
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error fetching wedding data:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  return await handleRequest("/dashboard/wedding/getData", { userId });
 }
 
 export async function saveWeddingData({
@@ -144,20 +90,8 @@ export async function saveWeddingData({
   userId: number;
   weddingData: object;
 }): Promise<any> {
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/dashboard/wedding/saveData", {
-      userId: userId,
-      weddingData: weddingData,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to save wedding data: " + response.status);
-    }
-    return response.data;
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error saving wedding data:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  return await handleRequest("/dashboard/wedding/saveData", {
+    userId,
+    weddingData,
+  });
 }

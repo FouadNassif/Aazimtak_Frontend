@@ -8,31 +8,22 @@ import { getAllGuests } from "@/actions/clientsDashboard";
 import { useToast } from "@/hooks/useToast";
 import { DataGrid } from "@mui/x-data-grid";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function Guests() {
   const { isAuth, user } = useAuth();
   const router = useRouter();
-  const { showError, showSuccess } = useToast();
-
-  const [allGuests, setAllGuests] = useState<any>(null);
+  const { showError } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDataFetched, setIsDataFetched] = useState<boolean>(false);
   const [rows, setRows] = useState<any[]>([]); // State for rows
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      if (!user?.id) {
-        showError("User is not Authenticated. Please login again.");
-        return;
-      }
 
       try {
         const result = await getAllGuests({ userId: user?.id });
         if (result) {
-          setAllGuests(result);
-          console.log(result.guests);
-
-          // Map over the guests to only extract the necessary fields
           const mappedGuests = result.guests.map((guest: any) => ({
             id: guest.id,
             name: guest.name,
@@ -40,9 +31,10 @@ export default function Guests() {
             attendingStatus: guest.attending_status,
             numberOfPeople: guest.number_of_people,
             numberOfKids: guest.number_of_kids,
+            edit: guest.id,
           }));
 
-          setRows(mappedGuests); // Set rows with the mapped guests
+          setRows(mappedGuests); 
           setIsLoading(false);
           setIsDataFetched(true);
         }
@@ -72,13 +64,27 @@ export default function Guests() {
     );
   }
 
+  const handleEditClick = (guestId: string) => {
+    router.push(`/dashboard/guests/edit/${guestId}`);
+  };
+
   const columns = [
     { field: "name", headerName: "Name", width: 180 },
     { field: "weddingLink", headerName: "Wedding Link", width: 300 },
     { field: "attendingStatus", headerName: "Attending Status", width: 180 },
     { field: "numberOfPeople", headerName: "Number of People", width: 180 },
     { field: "numberOfKids", headerName: "Number of Kids", width: 180 },
-    { field: "edit", headerName: "Edit", width: 150 },
+    {
+      field: "edit",
+      headerName: "Edit",
+      width: 150,
+      renderCell: (params: any) => (
+        <EditIcon
+          sx={{ cursor: "pointer" }}
+          onClick={() => handleEditClick(params.value)}
+        />
+      ),
+    },
   ];
 
   return (
@@ -92,7 +98,6 @@ export default function Guests() {
           alignItems: "center",
         }}
       >
-
         <Typography
           sx={{
             fontSize: "25px",

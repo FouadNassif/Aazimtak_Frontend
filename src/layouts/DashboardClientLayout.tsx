@@ -3,9 +3,16 @@ import DashboardNavBase from "@/components/Dashboard/DashboardNav";
 import AuthLayout from "@/layouts/AuthLayout";
 import { logout } from "@/actions/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthProvider";
+import { Box } from "@mui/material";
 
 const DashboardClientLayout = ({ children }) => {
+  const { user, isAuth } = useAuth();
   const router = useRouter();
+
+  if (!isAuth) {
+    router.push("/login");
+  }
 
   const links = [
     { text: "Dashboard", link: "/dashboard" },
@@ -26,22 +33,22 @@ const DashboardClientLayout = ({ children }) => {
     },
     {
       text: "Account",
-      subLinks: [{ text: "Edit Account", link: "/dashboard/account/edit" }],
+      subLinks: [{ text: "Edit Account", link: "/dashboard/account" }],
     },
   ];
   return (
     <AuthLayout requiredRole="client">
       <DashboardNavBase
         title="Clients Panel"
-        username="admin"
+        username={user?.username}
         links={links}
         onLogout={async () => {
           await logout();
           router.push("/");
         }}
-      />
-
-      {children}
+      >
+        <Box sx={{ p: 3 }}>{children}</Box>
+      </DashboardNavBase>
     </AuthLayout>
   );
 };

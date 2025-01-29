@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { createContext, useContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
@@ -18,6 +18,34 @@ export const useTheme = () => {
   return context;
 };
 
+const lightTheme = createTheme({
+  palette: {
+    mode: "light",
+    background: {
+      default: "#f5f5f5",
+      paper: "#ffffff",
+    },
+    text: {
+      primary: "#1a1a1a",
+      secondary: "#666666",
+    },
+  },
+});
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    background: {
+      default: "#121212",
+      paper: "#1a1a1a",
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "#999999",
+    },
+  },
+});
+
 export const ThemeContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -28,11 +56,7 @@ export const ThemeContextProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const theme = useMemo(() => {
-    return createTheme({
-      palette: {
-        mode,
-      },
-    });
+    return mode === "light" ? lightTheme : darkTheme;
   }, [mode]);
 
   return (

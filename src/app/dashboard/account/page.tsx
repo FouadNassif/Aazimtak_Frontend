@@ -46,12 +46,6 @@ export default function Guests() {
     setLoading(true);
     e.preventDefault();
 
-    if (user?.id === undefined) {
-      showError("User ID is undefined. Please log in again.");
-      setLoading(false);
-      return;
-    }
-
     try {
       if (password !== comfirmPassword) {
         showError("Passwords do not match. Please try again.");

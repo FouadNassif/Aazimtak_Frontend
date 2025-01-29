@@ -10,16 +10,14 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import DashboardNav from "@/components/Dashboard/DashboardNav";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/context/AuthProvider";
 import { getWeddingData, saveWeddingData } from "@/actions/clientsDashboard";
-import AuthLayout from "@/layouts/AuthLayout";
-import DashboardClientLayout from "@/layouts/DashboardClientLayout"
+import DashboardClientLayout from "@/layouts/DashboardClientLayout";
 
 export default function EditWedding() {
-  const { isAuth, user } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const { showSuccess, showError } = useToast();
 
@@ -66,11 +64,7 @@ export default function EditWedding() {
     };
 
     fetchWeddingData();
-  }, [isAuth, user?.id, router]);
-
-  if (!isAuth) {
-    return null;
-  }
+  }, [user?.id, router, showError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthProvider";
-import DashboardClientLayout from "@/layouts/DashboardClientLayout"
+import DashboardClientLayout from "@/layouts/DashboardClientLayout";
 import {
   Box,
   TextField,
@@ -148,7 +148,10 @@ export default function Guests() {
               label="Number of Kids"
               type="number"
               value={numberOfKids}
-              onChange={(e) => setNumberOfKids(Number(e.target.value))}
+              onChange={(e) => {
+                setNumberOfKids(Number(e.target.value));
+                e.target.value = numberOfKids;
+              }}
               fullWidth
               variant="outlined"
               sx={{

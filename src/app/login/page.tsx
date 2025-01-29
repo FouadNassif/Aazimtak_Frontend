@@ -25,14 +25,12 @@ export default function Login() {
   const { showError, showSuccess } = useToast();
 
   useEffect(() => {
-    // Redirect to the home page if the user is already authenticated
     if (isAuth) {
       router.push("/");
     }
   }, [isAuth, router]);
 
   useEffect(() => {
-    // Disable submit button if either username or password is empty
     if (username && password) {
       setDisableSubmit(false);
     } else {

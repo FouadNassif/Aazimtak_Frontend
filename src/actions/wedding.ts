@@ -1,7 +1,24 @@
 "use server";
-
-import { cookies } from "next/headers";
 import { LaravelInstance } from "./axios";
+
+async function handleRequest(endpoint: string, data: object): Promise<any> {
+  try {
+    const axiosClient = await LaravelInstance();
+    const response = await axiosClient.post(endpoint, data);
+
+    if (response.status !== 200) {
+      throw new Error(
+        `Request to ${endpoint} failed. HTTP Status: ${response.status}`
+      );
+    }
+
+    return response.data;
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    console.error(`Error in API call to ${endpoint}:`, errorMessage);
+    throw new Error(errorMessage);
+  }
+}
 
 export async function getWeddingCardDetails({
   wedding_id,
@@ -14,25 +31,12 @@ export async function getWeddingCardDetails({
   groom_name: string;
   bride_name: string;
 }): Promise<any> {
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/wedding/showWeddingCard", {
-      wedding_id: wedding_id,
-      guest_name: guest_name,
-      groom_name: groom_name,
-      bride_name: bride_name,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch guests data: " + response.status);
-    }
-
-    return response.data; // Return the dashboard data
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error fetching guests data:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  return await handleRequest("/wedding/showWeddingCard", {
+    wedding_id,
+    guest_name,
+    groom_name,
+    bride_name,
+  });
 }
 
 export async function setAttendance({
@@ -44,22 +48,9 @@ export async function setAttendance({
   attending: string;
   message: string;
 }): Promise<any> {
-  try {
-    const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post("/wedding/setAttendance", {
-      guest_name: guest_name,
-      attending: attending,
-      message: message,
-    });
-
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch guests data: " + response.status);
-    }
-
-    return response.data; // Return the dashboard data
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error fetching guests data:", errorMessage);
-    throw new Error(errorMessage); // Throw only the error message
-  }
+  return await handleRequest("/wedding/setAttendance", {
+    guest_name,
+    attending,
+    message,
+  });
 }

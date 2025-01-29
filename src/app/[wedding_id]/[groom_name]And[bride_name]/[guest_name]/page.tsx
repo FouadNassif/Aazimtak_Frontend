@@ -2,7 +2,7 @@
 
 import { getWeddingCardDetails } from "@/actions/wedding";
 import { Box } from "@mui/material";
-import { useParams, useRouter } from "next/navigation"; // Added useRouter
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Card from "@/components/Card/Welcome";
 import Loading from "@/components/Loading";
@@ -11,9 +11,8 @@ import ErrorMessage from "@/components/ErrorMessage";
 
 const GuestPage = () => {
   const params = useParams();
-  const router = useRouter(); // Initialize the router for navigation
-
-  // Extract parameters from URL
+  const router = useRouter(); 
+  
   const { wedding_id, guest_name: encodedGuestName } = params;
 
   const [groom_name, bride_name] = params["groom_name]And[bride_name"]

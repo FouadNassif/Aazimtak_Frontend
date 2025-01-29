@@ -1,6 +1,6 @@
 "use client";
 import { logout } from "@/actions/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -9,6 +9,7 @@ import {
   Box,
   Avatar,
   Link,
+  Container,
 } from "@mui/material";
 import { useAuth } from "@/context/AuthProvider";
 import { useToast } from "@/hooks/useToast";
@@ -18,6 +19,15 @@ export default function Navbar() {
   const { isAuth, user } = useAuth();
   const { showError, showSuccess } = useToast();
   const router = useRouter();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -30,104 +40,158 @@ export default function Navbar() {
   };
 
   return (
-    <AppBar sx={{ backgroundColor: "white" }} position="sticky">
-      <Toolbar>
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box display="flex" alignItems="center" className="flex-1">
-            <Link href="/">
-              <Avatar
-                alt="Aazimtak Logo"
-                src="/assets/img/Alogo.png"
-                sx={{ width: 40 }}
-              />
-            </Link>
-            <Typography
-              variant="h6"
-              sx={{
-                marginLeft: 1,
-                fontWeight: 700,
-                color: "#333",
-              }}
-            >
-              AAZIMTAK
-            </Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" className="space-x-4">
-            <Link
-              href="/"
-              sx={{
-                color: "2a5298",
-                fontWeight: "800",
-                cursor: "pointer",
-                padding: "10px 20px",
-              }}
-              underline="none"
-            >
-              Home
-            </Link>
-
-            <Link
-              href="/pricing"
-              sx={{
-                color: "2a5298",
-                fontWeight: "800",
-                cursor: "pointer",
-                padding: "10px 20px",
-              }}
-              underline="none"
-            >
-              Pricing & Preview
-            </Link>
-
-            {isAuth ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  sx={{
-                    color: "2a5298",
-                    fontWeight: "800",
-                    cursor: "pointer",
-                    padding: "10px 20px",
-                  }}
-                  underline="none"
-                >
-                  Dashboard
-                </Link>
-                <Button
-                  variant="contained"
-                  onClick={handleLogout}
-                  sx={{
-                    backgroundColor: "#00BFFF",
-                    "&:hover": { backgroundColor: "#0099CC" },
-                  }}
-                >
-                  Logout
-                </Button>
-              </>
-            ) : (
+    <AppBar
+      elevation={scrolled ? 2 : 0}
+      sx={{
+        backgroundColor: scrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
+        transition: "all 0.3s ease-in-out",
+        backdropFilter: scrolled ? "blur(10px)" : "none",
+      }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar sx={{ py: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Box display="flex" alignItems="center">
               <Link
-                href="/login"
+                href="/"
                 sx={{
-                  color: "2a5298",
-                  fontWeight: "800",
-                  cursor: "pointer",
-                  padding: "10px 20px",
+                  display: "flex",
+                  alignItems: "center",
+                  textDecoration: "none",
                 }}
-                underline="none"
               >
-                Login
+                <Avatar
+                  alt="Aazimtak Logo"
+                  src="/assets/img/Alogo.png"
+                  sx={{
+                    width: 45,
+                    height: 45,
+                    transition: "transform 0.2s",
+                    "&:hover": { transform: "scale(1.05)" },
+                  }}
+                />
+                <Typography
+                  variant="h5"
+                  sx={{
+                    ml: 1.5,
+                    fontWeight: 700,
+                    background: "linear-gradient(45deg, #2a5298, #1976d2)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  AAZIMTAK
+                </Typography>
               </Link>
-            )}
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={2}>
+              {["Home", "Pricing & Preview"].map((item) => (
+                <Link
+                  key={item}
+                  href={item === "Home" ? "/" : "/pricing"}
+                  sx={{
+                    color: scrolled ? "#2a5298" : "#fff",
+                    fontWeight: 600,
+                    fontSize: "0.95rem",
+                    textDecoration: "none",
+                    position: "relative",
+                    padding: "8px 16px",
+                    transition: "all 0.2s",
+                    "&:hover": {
+                      color: "#1976d2",
+                      "&::after": {
+                        width: "100%",
+                      },
+                    },
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      width: "0%",
+                      height: "2px",
+                      backgroundColor: "#1976d2",
+                      transition: "width 0.2s ease-in-out",
+                    },
+                  }}
+                >
+                  {item}
+                </Link>
+              ))}
+
+              {isAuth ? (
+                <>
+                  <Link
+                    href={
+                      user.role === "admin" ? "/admin/dashboard" : "/dashboard"
+                    }
+                    sx={{
+                      color: scrolled ? "#2a5298" : "#fff",
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      padding: "8px 16px",
+                      "&:hover": { color: "#1976d2" },
+                    }}
+                  >
+                    Dashboard
+                  </Link>
+                  <Button
+                    variant="contained"
+                    onClick={handleLogout}
+                    sx={{
+                      backgroundImage:
+                        "linear-gradient(45deg, #2a5298, #1976d2)",
+                      color: "white",
+                      px: 3,
+                      py: 1,
+                      borderRadius: "25px",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      transition: "all 0.2s",
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
+                      },
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  href="/login"
+                  variant="contained"
+                  sx={{
+                    backgroundImage: "linear-gradient(45deg, #2a5298, #1976d2)",
+                    color: "white",
+                    px: 3,
+                    py: 1,
+                    borderRadius: "25px",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    transition: "all 0.2s",
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
+                    },
+                  }}
+                >
+                  Login
+                </Button>
+              )}
+            </Box>
           </Box>
-        </Box>
-      </Toolbar>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 }
