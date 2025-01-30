@@ -7,12 +7,8 @@ import { useAuth } from "@/context/AuthProvider";
 import { Box } from "@mui/material";
 
 const DashboardClientLayout = ({ children }) => {
-  const { user, isAuth } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-
-  if (!isAuth) {
-    router.push("/login");
-  }
 
   const links = [
     { text: "Dashboard", link: "/dashboard" },

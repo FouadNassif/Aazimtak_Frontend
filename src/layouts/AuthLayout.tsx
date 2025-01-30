@@ -20,7 +20,7 @@ export default function AuthLayout({
     }
   }, [isAuth, user?.role, requiredRole, router]);
   if (!isAuth || (requiredRole && user?.role !== requiredRole)) {
-    return null; // Or a spinner/placeholder
+    return null;
   }
 
   return <>{children}</>;

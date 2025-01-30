@@ -56,6 +56,35 @@ export async function addGuest({
   });
 }
 
+export async function editGuest({
+  guestId,
+  guestName,
+  numberOfPeople,
+  numberOfKids,
+}: {
+  guestId: number;
+  numberOfPeople: number;
+  numberOfKids: number;
+  guestName: string;
+}): Promise<any> {
+  return await handleRequest("/dashboard/guests/edit", {
+    guestId,
+    guestName,
+    numberOfPeople,
+    numberOfKids,
+  });
+}
+
+export async function deleteGuest({
+  guestId,
+}: {
+  guestId: number;
+}): Promise<any> {
+  return await handleRequest("/dashboard/guests/delete", {
+    guestId,
+  });
+}
+
 export async function editAccount({
   userId,
   username,

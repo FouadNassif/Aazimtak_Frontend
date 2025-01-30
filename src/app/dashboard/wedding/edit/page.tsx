@@ -55,16 +55,15 @@ export default function EditWedding() {
             ...wedding,
             ...wedding_details,
           }));
+          setLoading(false);
         }
       } catch (error) {
-        showError("Failed to load dashboard data. Please try again.");
-      } finally {
-        setLoading(false); // Stop loading
+        console.log(error);
       }
     };
 
     fetchWeddingData();
-  }, [user?.id, router, showError]);
+  }, [user?.id, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
