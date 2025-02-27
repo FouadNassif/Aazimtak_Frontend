@@ -12,7 +12,7 @@ import { getAllWedding } from "@/actions/adminDashboard";
 export default function Weddings() {
   const router = useRouter();
   const { showError } = useToast();
-  
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDataFetched, setIsDataFetched] = useState<boolean>(false);
   const [rows, setRows] = useState<any[]>([]); // State for rows
@@ -22,13 +22,15 @@ export default function Weddings() {
       try {
         const result = await getAllWedding();
         if (result) {
-          const mappedWeddings = result.weddings.map((wedding: any, index: number) => ({
-            id: index,
-            brideFullName: `${wedding.bride_name} ${wedding.bride_lastname}`,
-            groomFullName: `${wedding.groom_name} ${wedding.groom_lastname}`,
-            createdAt: new Date(wedding.created_at).toLocaleDateString(),
-            updatedAt: new Date(wedding.updated_at).toLocaleDateString(),
-          }));
+          const mappedWeddings = result.weddings.map(
+            (wedding: any, index: number) => ({
+              id: index,
+              brideFullName: `${wedding.bride_name} ${wedding.bride_lastname}`,
+              groomFullName: `${wedding.groom_name} ${wedding.groom_lastname}`,
+              createdAt: new Date(wedding.created_at).toLocaleDateString(),
+              updatedAt: new Date(wedding.updated_at).toLocaleDateString(),
+            })
+          );
 
           setRows(mappedWeddings);
           setIsLoading(false);
@@ -54,45 +56,33 @@ export default function Weddings() {
   }
 
   const columns = [
-    { 
-      field: "brideFullName", 
-      headerName: "Bride Full Name", 
+    {
+      field: "brideFullName",
+      headerName: "Bride Full Name",
       width: 200,
       renderCell: (params: any) => (
-        <Typography sx={{ fontWeight: 500 }}>
-          {params.value}
-        </Typography>
+        <Typography sx={{ fontWeight: 500 }}>{params.value}</Typography>
       ),
     },
-    { 
-      field: "groomFullName", 
-      headerName: "Groom Full Name", 
+    {
+      field: "groomFullName",
+      headerName: "Groom Full Name",
       width: 200,
       renderCell: (params: any) => (
-        <Typography sx={{ fontWeight: 500 }}>
-          {params.value}
-        </Typography>
+        <Typography sx={{ fontWeight: 500 }}>{params.value}</Typography>
       ),
     },
-    { 
-      field: "createdAt", 
-      headerName: "Created At", 
+    {
+      field: "createdAt",
+      headerName: "Created At",
       width: 150,
-      renderCell: (params: any) => (
-        <Typography>
-          {params.value}
-        </Typography>
-      ),
+      renderCell: (params: any) => <Typography>{params.value}</Typography>,
     },
-    { 
-      field: "updatedAt", 
-      headerName: "Updated At", 
+    {
+      field: "updatedAt",
+      headerName: "Updated At",
       width: 150,
-      renderCell: (params: any) => (
-        <Typography>
-          {params.value}
-        </Typography>
-      ),
+      renderCell: (params: any) => <Typography>{params.value}</Typography>,
     },
   ];
 
@@ -119,7 +109,14 @@ export default function Weddings() {
           All Weddings
         </Typography>
 
-        <Box sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 2, boxShadow: 3 }}>
+        <Box
+          sx={{
+            width: "fit-content",
+            bgcolor: "background.paper",
+            borderRadius: 2,
+            boxShadow: 3,
+          }}
+        >
           <DataGrid
             rows={rows}
             columns={columns}
@@ -134,13 +131,14 @@ export default function Weddings() {
               },
             }}
             sx={{
-              '& .MuiDataGrid-cell': {
+              "& .MuiDataGrid-cell": {
                 py: 2,
               },
-              '& .MuiDataGrid-columnHeaders': {
-                bgcolor: '#f5f5f5',
-                fontWeight: 'bold',
+              "& .MuiDataGrid-columnHeaders": {
+                bgcolor: "#f5f5f5",
+                fontWeight: "bold",
               },
+              width: "fit-content",
             }}
           />
         </Box>
@@ -148,4 +146,3 @@ export default function Weddings() {
     </AdminLayout>
   );
 }
-

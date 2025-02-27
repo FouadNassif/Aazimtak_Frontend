@@ -1,4 +1,3 @@
-"use client";
 import { Box } from "@mui/material";
 import ImagesLayout5 from "@/components/Card/ImagesLayout5";
 import Countdown from "@/components/Card/CountDown";
@@ -10,36 +9,25 @@ import GiftRegistry from "@/components/Card/GiftRegistry";
 import ImagesLayout3 from "@/components/Card/ImagesLayout3";
 import ImagesLayout4 from "@/components/Card/ImagesLayout4";
 import PoweredBy from "@/components/PowerBy";
-const weddingDetails = {
-  wedding_date: "2027-01-27",
+import RSVPForm from "./Card/RSVPForm";
 
-  ceremony_time: "16:00:00",
-  ceremony_place: "Chruch",
-  ceremony_city: "Earth City",
-  ceremony_maps: "/dwdwdwd",
-
-  party_time: "19:00:00",
-  party_place: "Restaurant",
-  party_city: "Earth City",
-  party_maps: "/dwdwdwd",
-
-  gift_type: "Bank Of Earth",
-  gift_details: "123-4567-ABC-ZXD",
-};
-export default function WeddingDemo() {
+export default function WeddingDemo({ weddingDetails, groupedImages }) {
+  const guest = {
+    name: "John Doe",
+    number_of_people: 2,
+    number_of_kids: 1,
+  };
   return (
-    <Box
-      sx={{
-        width: "50%",
-      }}
-    >
-      <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
-      />
+    <Box sx={{ width: "50%" }}>
+      {groupedImages[5] && groupedImages[5].length >= 5 && (
+        <ImagesLayout5
+          image1={groupedImages[5][0]}
+          image2={groupedImages[5][1]}
+          image3={groupedImages[5][2]}
+          image4={groupedImages[5][3]}
+          image5={groupedImages[5][4]}
+        />
+      )}
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -54,13 +42,14 @@ export default function WeddingDemo() {
         <DateDisplay date={weddingDetails.wedding_date} />
         <Countdown targetDate={weddingDetails.wedding_date} />
       </Box>
-      <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
-      />
+
+      {groupedImages[2] && groupedImages[2].length >= 2 && (
+        <ImagesLayout2
+          image1={groupedImages[2][0]}
+          image2={groupedImages[2][1]}
+        />
+      )}
+
       <WeddingDetails
         weddingDetail={{
           type: "Wedding Ceremony",
@@ -70,10 +59,14 @@ export default function WeddingDemo() {
           maps: weddingDetails.ceremony_maps,
         }}
       />
-      <ImagesLayout2
-        image1="/assets/img/Welcome.jpg"
-        image2="/assets/img/Support.jpg"
-      />
+
+      {groupedImages[3] && groupedImages[3].length >= 3 && (
+        <ImagesLayout3
+          image1={groupedImages[3][0]}
+          image2={groupedImages[3][1]}
+          image3={groupedImages[3][2]}
+        />
+      )}
 
       <WeddingDetails
         weddingDetail={{
@@ -84,23 +77,39 @@ export default function WeddingDemo() {
           maps: weddingDetails.party_maps,
         }}
       />
-      <ImagesLayout3
-        image1="/assets/img/Support.jpg"
-        image2="/assets/img/Welcome2.jpg"
-        image3="/assets/img/Welcome3.jpg"
-      />
+
+      {groupedImages[4] && groupedImages[4].length >= 4 && (
+        <ImagesLayout4
+          image1={groupedImages[4][0]}
+          image2={groupedImages[4][1]}
+          image3={groupedImages[4][2]}
+          image4={groupedImages[4][3]}
+        />
+      )}
+
       <GiftRegistry
         weddingDetail={{
           gift_type: weddingDetails.gift_type,
           gift_details: weddingDetails.gift_details,
         }}
       />
-      <ImagesLayout4
-        image1="/assets/img/Welcome.jpg"
-        image2="/assets/img/Support.jpg"
-        image3="/assets/img/Welcome2.jpg"
-        image4="/assets/img/Welcome3.jpg"
+      <RSVPForm
+        guest={{
+          name: guest.name,
+          number_of_people: guest.number_of_people,
+          number_of_kids: guest.number_of_kids,
+        }}
+        date={weddingDetails.wedding_date}
       />
+      {groupedImages[5] && groupedImages[6].length >= 5 && (
+        <ImagesLayout5
+          image1={groupedImages[6][0]}
+          image2={groupedImages[6][1]}
+          image3={groupedImages[6][2]}
+          image4={groupedImages[6][3]}
+          image5={groupedImages[6][4]}
+        />
+      )}
       <PoweredBy />
     </Box>
   );

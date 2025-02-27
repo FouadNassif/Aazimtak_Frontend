@@ -1,134 +1,109 @@
 "use client";
-import React, { useState } from "react";
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
-import { uploadImages, getAllUserImages } from "@/actions/UploadImages"; // Adjust the path to your uploadImages function
+
+import { useEffect, useState } from "react";
+import { getAllUserImages } from "@/actions/UploadImages";
+import ImagesLayout2 from "@/components/Card/ImagesLayout2";
+import ImagesLayout3 from "@/components/Card/ImagesLayout3";
+import ImagesLayout4 from "@/components/Card/ImagesLayout4";
+import ImagesLayout5 from "@/components/Card/ImagesLayout5";
 import { useAuth } from "@/context/AuthProvider";
-import Image from "next/image";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
+export default function EditImages() {
+  const { user } = useAuth();
+  const [userImages, setUserImages] = useState<
+    { layout: number; path: string }[]
+  >([]);
 
-const ImageUpload: React.FC = () => {
-  const { isAuth, user } = useAuth();
-  const [images, setImages] = useState<File[]>([]);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]); // For uploaded image paths
-  const [error, setError] = useState<string | null>(null);
-
-  // Handle file selection
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-      setImages((prevImages) => [...prevImages, ...selectedFiles]);
-    }
-  };
-
-  // Handle image upload
-  const handleUpload = async () => {
-    if (images.length === 0) {
-      setError("Please select images first.");
-      return;
-    }
-
-    setUploading(true);
-    setError(null);
-
-    try {
-      // Upload images
-      const response = await uploadImages({ userId: user?.id, images });
-
-      // On success, update the uploaded images
-      if (response && response.paths) {
-        setUploadedImages((prevImages) => [...prevImages, ...response.paths]);
-        setImages([]); // Clear selected images after successful upload
-      } else {
-        throw new Error("Failed to upload images");
+  useEffect(() => {
+    const fetchImages = async () => {
+      if (!user?.id) return;
+      try {
+        const images = await getAllUserImages({ userId: user.id });
+        setUserImages(images);
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      setError("Error uploading images. Please try again.");
-    } finally {
-      setUploading(false);
-    }
-  };
+    };
 
-  // Fetch all uploaded images
-  const fetchAllUploadedImages = async () => {
-    try {
-      const response = await getAllUserImages({ userId: user?.id });
-      console.log(response);
-      if (response && response.uploadedImages) {
-        // Assuming the response contains an array of image paths
-        setUploadedImages(response.uploadedImages.map((img: any) => img.path));
-      }
-    } catch (err) {
-      setError("Error fetching images. Please try again.");
+    fetchImages();
+  }, [user]);
+
+  const groupedImages: { [key: number]: string[] } = {};
+
+  Object.entries(userImages).forEach(([layout, images]) => {
+    const layoutKey = Number(layout);
+    if (!groupedImages[layoutKey]) {
+      groupedImages[layoutKey] = [];
     }
-  };
+
+    Object.values(images).forEach((path) => {
+      groupedImages[layoutKey].push("http://127.0.0.1:8000/storage/" + path);
+    });
+  });
+
+  console.log("Grouped Images:", groupedImages);
 
   return (
     <DashboardClientLayout>
-      <Box sx={{ padding: "20px", textAlign: "center" }}>
-        <Typography variant="h6">Upload Your Wedding Images</Typography>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleFileChange}
-          style={{ marginTop: "10px" }}
-        />
-        <Box sx={{ marginTop: "20px" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleUpload}
-            disabled={uploading}
-          >
-            {uploading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Upload Images"
-            )}
-          </Button>
-        </Box>
-
-        {error && (
-          <Typography color="error" sx={{ marginTop: "20px" }}>
-            {error}
-          </Typography>
-        )}
-
-        {/* Button to fetch all uploaded images */}
-        <Box sx={{ marginTop: "20px" }}>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={fetchAllUploadedImages}
-          >
-            Get All Uploaded Images
-          </Button>
-        </Box>
-
-        {/* Display uploaded images */}
-        {uploadedImages.length > 0 && (
-          <Box sx={{ marginTop: "30px" }}>
-            <Typography variant="h6">Uploaded Images</Typography>
-            <Grid container spacing={2} sx={{ marginTop: "20px" }}>
-              {uploadedImages.map((imagePath, index) => (
-                <Grid item xs={4} key={index}>
-                  <Image
-                    alt="hello"
-                    width={500} // Fixed width based on image size
-                    height={300} // Fixed height based on image size
-                    src={"http://localhost:8000/storage/" + imagePath}
-                    quality={90}
-                    style={{ objectFit: "cover", borderRadius: "8px" }} // Use objectFit for better scaling control
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-        )}
-      </Box>
+      <h1 className="text-xl font-bold">Edit Images</h1>
+      <div className="space-y-4">
+        {Object.entries(groupedImages).map(([layout, images]) => {
+          switch (parseInt(layout)) {
+            case 2:
+              return images.length >= 2 ? (
+                <ImagesLayout2
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                />
+              ) : null;
+            case 3:
+              return images.length >= 3 ? (
+                <ImagesLayout3
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                />
+              ) : null;
+            case 4:
+              return images.length >= 4 ? (
+                <ImagesLayout4
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                  image4={images[3]}
+                />
+              ) : null;
+            case 5:
+              return images.length >= 5 ? (
+                <ImagesLayout5
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                  image4={images[3]}
+                  image5={images[4]}
+                />
+              ) : null;
+            case 6:
+              return images.length >= 5 ? (
+                <ImagesLayout5
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                  image4={images[3]}
+                  image5={images[4]}
+                />
+              ) : null;
+            default:
+              return null;
+          }
+        })}
+      </div>
+      <WeddingCard weddingDetails={weddingDetails} guest={guest} />
     </DashboardClientLayout>
   );
-};
-
-export default ImageUpload;
+}

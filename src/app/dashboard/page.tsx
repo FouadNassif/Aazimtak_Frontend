@@ -45,13 +45,12 @@ export default function Dashboard() {
         }
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
-        showError("Failed to load dashboard data. Please try again.");
         setIsLoading(false);
       }
     };
 
       fetchDashboardData();
-  }, [router, showError, isDataFetched, user?.id]);
+  }, [router, isDataFetched, user?.id]);
 
   if (isLoading) {
     return (

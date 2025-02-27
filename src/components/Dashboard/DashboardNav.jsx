@@ -87,7 +87,7 @@ export default function DashboardNavBase({
           {links.map(({ text, link, subLinks }, index) => (
             <div key={index}>
               <ListItem
-                button
+                button="true"
                 onClick={() => subLinks && toggleMenu(text)}
                 sx={{
                   py: 1.5,
@@ -141,7 +141,7 @@ export default function DashboardNavBase({
           }}
         >
           <ListItem
-            button
+            button="true"
             onClick={toggleTheme}
             sx={{
               borderRadius: 1,
@@ -158,7 +158,7 @@ export default function DashboardNavBase({
           </ListItem>
 
           <ListItem
-            button
+            button="true"
             onClick={onLogout}
             sx={{
               borderRadius: 1,

@@ -10,7 +10,7 @@ export default function NavLinks({ link, text, mode }) {
   return (
     <Link href={link} style={{ textDecoration: "none" }}>
       <ListItem
-        button
+        button="true"
         sx={{
           pl: 7,
           py: 1,
