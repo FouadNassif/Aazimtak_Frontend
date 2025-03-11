@@ -72,6 +72,7 @@ export async function checkAuth(): Promise<{
     }
     return response.data;
   } catch (err) {
+    console.log(err)
     return { authenticated: false, user: null };
   }
 }
