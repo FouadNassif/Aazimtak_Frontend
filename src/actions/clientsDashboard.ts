@@ -1,8 +1,7 @@
 "use server";
 import { LaravelInstance } from "./axios";
-import { DashboardData, Guest, WeddingData, ApiResponse } from "./types";
 
-async function handleRequest<T>(endpoint: string, data: object): Promise<ApiResponse<T>> {
+async function handleRequest(endpoint: string, data: object): Promise<any> {
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post(endpoint, data);
@@ -25,19 +24,17 @@ export async function getDashboardData({
   userId,
 }: {
   userId: number;
-}): Promise<DashboardData> {
-  const response = await handleRequest<DashboardData>("/dashboard", { userId });
-  return response.data;
+}): Promise<any> {
+  return await handleRequest("/dashboard", { userId });
 }
 
 export async function getAllGuests({
   userId,
 }: {
   userId: number;
-}): Promise<Guest[]> {
+}): Promise<any> {
   console.log(`Fetching guests for userId: ${userId}`);
-  const response = await handleRequest<Guest[]>("/dashboard/guests", { userId });
-  return response.data;
+  return await handleRequest("/dashboard/guests", { userId });
 }
 
 export async function addGuest({
@@ -50,14 +47,13 @@ export async function addGuest({
   guestName: string;
   numberOfPeople: number;
   numberOfKids: number;
-}): Promise<Guest> {
-  const response = await handleRequest<Guest>("/dashboard/guests/add", {
+}): Promise<any> {
+  return await handleRequest("/dashboard/guests/add", {
     userId,
     guestName,
     numberOfPeople,
     numberOfKids,
   });
-  return response.data;
 }
 
 export async function editGuest({
@@ -70,25 +66,23 @@ export async function editGuest({
   numberOfPeople: number;
   numberOfKids: number;
   guestName: string;
-}): Promise<Guest> {
-  const response = await handleRequest<Guest>("/dashboard/guests/edit", {
+}): Promise<any> {
+  return await handleRequest("/dashboard/guests/edit", {
     guestId,
     guestName,
     numberOfPeople,
     numberOfKids,
   });
-  return response.data;
 }
 
 export async function deleteGuest({
   guestId,
 }: {
   guestId: number;
-}): Promise<void> {
-  const response = await handleRequest<void>("/dashboard/guests/delete", {
+}): Promise<any> {
+  return await handleRequest("/dashboard/guests/delete", {
     guestId,
   });
-  return response.data;
 }
 
 export async function editAccount({
@@ -101,23 +95,21 @@ export async function editAccount({
   username: string;
   old_password: string;
   password: string;
-}): Promise<ApiResponse<null>> {
-  const response = await handleRequest<ApiResponse<null>>("/dashboard/account/edit", {
+}): Promise<any> {
+  return await handleRequest("/dashboard/account/edit", {
     userId,
     username,
     old_password,
     password,
   });
-  return response.data;
 }
 
 export async function getWeddingData({
   userId,
 }: {
   userId: number;
-}): Promise<WeddingData> {
-  const response = await handleRequest<WeddingData>("/dashboard/wedding/getData", { userId });
-  return response.data;
+}): Promise<any> {
+  return await handleRequest("/dashboard/wedding/getData", { userId });
 }
 
 export async function saveWeddingData({
@@ -126,10 +118,9 @@ export async function saveWeddingData({
 }: {
   userId: number;
   weddingData: object;
-}): Promise<ApiResponse<null>> {
-  const response = await handleRequest<ApiResponse<null>>("/dashboard/wedding/saveData", {
+}): Promise<any> {
+  return await handleRequest("/dashboard/wedding/saveData", {
     userId,
     weddingData,
   });
-  return response.data;
 }
