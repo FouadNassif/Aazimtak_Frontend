@@ -45,6 +45,7 @@ export default function Guests() {
     }
 
     try {
+      console.log(user.id, guestName, numberOfKids, numberOfPeople)
       const result = await addGuest({
         userId: user.id,
         guestName,
