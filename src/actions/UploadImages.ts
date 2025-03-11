@@ -1,6 +1,10 @@
 "use server";
 
 import { LaravelInstance } from "./axios";
+interface UserImageResponse {
+  message: string;
+  paths: string[]; // Array of image URLs (strings)
+}
 
 export async function uploadImages({
   userId,
@@ -8,7 +12,7 @@ export async function uploadImages({
 }: {
   userId: number;
   images: File[]; // Array of image files
-}): Promise<any> {
+}): Promise<string[]> {
   try {
     const formData = new FormData();
 
@@ -48,7 +52,7 @@ export async function getAllUserImages({
   userId,
 }: {
   userId: number;
-}): Promise<any> {
+}): Promise<UserImageResponse> {
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post(

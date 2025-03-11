@@ -60,6 +60,7 @@ const GuestPage = () => {
           setGuest(result.guest);
         }
       } catch (err) {
+        console.log(err)
         setError("An error occurred while fetching wedding details");
       }
     };

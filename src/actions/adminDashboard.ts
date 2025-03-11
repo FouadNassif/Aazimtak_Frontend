@@ -1,8 +1,9 @@
 "use server";
 
 import { LaravelInstance } from "./axios";
+import { DashboardResponse, AddWeddingRequest, AddWeddingResponse, GetAllWeddingsResponse } from '@/types/admindashboard';
 
-export async function getAdminDashboard(): Promise<any> {
+export async function getAdminDashboard(): Promise<DashboardResponse> {
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post("/admin/dashboard");
@@ -18,8 +19,8 @@ export async function getAdminDashboard(): Promise<any> {
 }
 
 export async function addWeddingAPI(
-  formData: Record<string, any>
-): Promise<any> {
+  formData: AddWeddingRequest
+): Promise<AddWeddingResponse> {
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post(
@@ -31,7 +32,7 @@ export async function addWeddingAPI(
       throw new Error(`Failed to add wedding. HTTP Status: ${response.status}`);
     }
 
-    return response.data;
+    return response.data;  // The response will be of type AddWeddingResponse
   } catch (err) {
     console.error(
       "Error in addWeddingAPI API call:",
@@ -40,11 +41,12 @@ export async function addWeddingAPI(
     return {
       status: false,
       message: "Failed to add wedding. Please try again later.",
+      error: err instanceof Error ? err.message : "Unknown error",
     };
   }
 }
 
-export async function getAllWedding(): Promise<any> {
+export async function getAllWedding(): Promise<GetAllWeddingsResponse> {
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post("/admin/dashboard/wedding/getAll");
@@ -55,7 +57,7 @@ export async function getAllWedding(): Promise<any> {
       );
     }
 
-    return response.data;
+    return response.data as GetAllWeddingsResponse;  // Cast the response data to the expected type
   } catch (err) {
     console.error(
       "Error in getAllWedding API call:",

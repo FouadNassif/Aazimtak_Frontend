@@ -5,7 +5,7 @@ export async function LaravelInstance() {
     const cookie = await cookies();
     const token =  cookie.get('token')?.value;
     const axiosInstance = axios.create({
-            baseURL: "http://127.0.0.1:8000/api",
+            baseURL: "https://aazimtak-main-idj1ia.laravel.cloud/api",
     headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ export async function LaravelInstance() {
     })
 
     axiosInstance.interceptors.response.use(
-        response => {console.log("Response:", response); return response},
+        response => { return response},
         error => {
             console.log("Response Error:", error);
             return Promise.reject(error);
@@ -22,7 +22,6 @@ export async function LaravelInstance() {
 
     axiosInstance.interceptors.request.use(
         request => {
-            console.log("Request:", request);
             return request;
         }
     )

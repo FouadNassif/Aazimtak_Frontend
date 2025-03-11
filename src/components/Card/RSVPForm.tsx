@@ -75,6 +75,7 @@ const RSVPForm: React.FC<Props> = ({ guest, date }) => {
         showSuccess("Thank you! Your RSVP has been submitted successfully.");
       }
     } catch (err) {
+      console.log(err);
       showError("Oops! Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
