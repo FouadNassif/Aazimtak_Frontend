@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import React from "react";
 import DashboardNavBase from "@/components/Dashboard/DashboardNav";
 import AuthLayout from "@/layouts/AuthLayout";

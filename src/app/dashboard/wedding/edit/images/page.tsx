@@ -37,7 +37,7 @@ export default function EditImages() {
     }
 
     Object.values(images).forEach((path) => {
-      groupedImages[layoutKey].push("http://127.0.0.1:8000/storage/" + path);
+      groupedImages[layoutKey].push(process.env.NEXT_PUBLIC_API_URL + path);
     });
   });
 
