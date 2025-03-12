@@ -1,11 +1,11 @@
 import axios from "axios";
 import { cookies } from "next/headers";
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export async function LaravelInstance() {
     const cookie = await cookies();
     const token =  cookie.get('token')?.value;
     const axiosInstance = axios.create({
-            baseURL: "https://aazimtak-main-idj1ia.laravel.cloud/api ",
+            baseURL: apiUrl,
     headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
