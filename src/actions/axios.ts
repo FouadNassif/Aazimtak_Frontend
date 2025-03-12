@@ -5,7 +5,7 @@ export async function LaravelInstance() {
     const cookie = await cookies();
     const token =  cookie.get('token')?.value;
     const axiosInstance = axios.create({
-            baseURL: process.env.NEXT_PUBLIC_API_URL,
+            baseURL: "https://aazimtak-main-idj1ia.laravel.cloud/api",
     headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
