@@ -30,7 +30,7 @@ export default function AdminLayout({ children }) {
   const router = useRouter();
 
   return (
-    <AuthLayout requiredRole="admin">
+    <AuthLayout requiredRole="admin" >
       <DashboardNavBase
         title="Admin Panel"
         username={user?.username}
