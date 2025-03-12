@@ -52,8 +52,7 @@ export default function EditImages() {
       console.log("Wedding details updated:", weddingDetails);
     }
   }, [weddingDetails]); // This will run every time weddingDetails changes
-
-  const baseUrl = "http://127.0.0.1:8000/storage/"; // Base URL
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL; // Base URL
 
   const groupedImages: { [key: number]: string[] } = {};
 
