@@ -8,6 +8,7 @@ import ImagesLayout4 from "@/components/Card/ImagesLayout4";
 import ImagesLayout5 from "@/components/Card/ImagesLayout5";
 import { useAuth } from "@/context/AuthProvider";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
+import WeddingCard from "@/components/WeddingCard";
 export default function EditImages() {
   const { user } = useAuth();
   const [userImages, setUserImages] = useState<
