@@ -71,8 +71,8 @@ export default function Navbar() {
                   alt="Aazimtak Logo"
                   src="/assets/img/Alogo.png"
                   sx={{
-                    width: 45,
-                    height: 45,
+                    width: { xs: 20, sm: 45 },
+                    width: { xs: 20, sm: 45 },
                     transition: "transform 0.2s",
                     "&:hover": { transform: "scale(1.05)" },
                   }}
@@ -80,6 +80,7 @@ export default function Navbar() {
                 <Typography
                   variant="h5"
                   sx={{
+                    fontSize: { xs: 0, sm: 30 },
                     ml: 1.5,
                     fontWeight: 700,
                     background: "linear-gradient(45deg, #2a5298, #1976d2)",
@@ -94,7 +95,7 @@ export default function Navbar() {
             </Box>
 
             <Box display="flex" alignItems="center" gap={2}>
-              {["Home", "Pricing & Preview"].map((item) => (
+              {["Home", "Pricing"].map((item) => (
                 <Link
                   key={item}
                   href={item === "Home" ? "/" : "/pricing"}
@@ -104,7 +105,7 @@ export default function Navbar() {
                     fontSize: "0.95rem",
                     textDecoration: "none",
                     position: "relative",
-                    padding: "8px 16px",
+                    padding: {xs: "0px", sm: "8px 16px"},
                     transition: "all 0.2s",
                     "&:hover": {
                       color: "#1976d2",

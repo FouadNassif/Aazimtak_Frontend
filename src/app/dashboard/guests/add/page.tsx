@@ -14,10 +14,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { addGuest } from "@/actions/clientsDashboard";
+import { useTheme } from "@mui/material/styles";
+
+
 
 export default function Guests() {
   const { user } = useAuth();
   const router = useRouter();
+  const theme = useTheme();
 
   const [guestName, setGuestName] = useState<string>("");
   const [numberOfPeople, setNumberOfPeople] = useState<number>(0);
@@ -72,19 +76,18 @@ export default function Guests() {
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
-            backgroundColor: "#F1F5F9",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             minHeight: "100vh",
             padding: "20px",
+            backgroundColor: theme.palette.mode === "dark" ? "" : "#F1F5F9",
           }}
         >
           <Box
             sx={{
-              backgroundColor: "#fff",
               borderRadius: "12px",
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
               padding: "40px",
               width: "100%",
               maxWidth: "480px",
@@ -120,9 +123,6 @@ export default function Guests() {
               fullWidth
               variant="outlined"
               sx={{
-                "& .MuiInputBase-root": {
-                  backgroundColor: "#F4F6F8",
-                },
                 marginBottom: "20px",
               }}
             />
@@ -138,9 +138,6 @@ export default function Guests() {
               fullWidth
               variant="outlined"
               sx={{
-                "& .MuiInputBase-root": {
-                  backgroundColor: "#F4F6F8",
-                },
                 marginBottom: "20px",
               }}
             />
@@ -156,9 +153,6 @@ export default function Guests() {
               fullWidth
               variant="outlined"
               sx={{
-                "& .MuiInputBase-root": {
-                  backgroundColor: "#F4F6F8",
-                },
                 marginBottom: "20px",
               }}
             />

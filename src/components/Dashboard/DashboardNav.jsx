@@ -9,6 +9,7 @@ import {
   Divider,
   Collapse,
   ListItemIcon,
+  Link,
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -36,11 +37,11 @@ export default function DashboardNavBase({
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar - remains the same */}
       <Box
         component="nav"
         sx={{
-          width: 280,
+          width: { xs: "35%", sm: "280px" }, 
+          maxWidth: "280px",
           flexShrink: 0,
           height: "100vh",
           position: "fixed",
@@ -50,11 +51,12 @@ export default function DashboardNavBase({
           borderRight: `1px solid ${mode === "dark" ? "#333" : "#e0e0e0"}`,
           display: "flex",
           flexDirection: "column",
-          transition: "all 0.3s ease",
+          transition: "width 0.3s ease",
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.05)",
           zIndex: 1200,
         }}
       >
+
         {/* Header */}
         <Box
           sx={{
@@ -104,13 +106,34 @@ export default function DashboardNavBase({
                 <ListItemIcon sx={{ color: "inherit", minWidth: 40 }}>
                   <DashboardIcon />
                 </ListItemIcon>
+                {text == "Dashboard" ? 
+                <Link href={text == "Dashboard" ? "/dashboard" : ""} sx={{textDecoration: "none", color:"inherit"}}>
                 <ListItemText
+                href="/dashboard"
                   primary={text}
                   primaryTypographyProps={{
                     fontSize: "0.875rem",
                     fontWeight: 500,
                   }}
+                  sx={{
+                    cursor: "pointer"
+                  }}
                 />
+                </Link> : 
+                <ListItemText
+                href="/dashboard"
+                  primary={text}
+                  primaryTypographyProps={{
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                  }}
+                  sx={{
+                    cursor: "pointer"
+                  }}
+                />
+                }
+                
+                
                 {subLinks &&
                   (activeMenu === text ? <ExpandLess /> : <ExpandMore />)}
               </ListItem>
@@ -143,8 +166,10 @@ export default function DashboardNavBase({
           <ListItem
             button="true"
             onClick={toggleTheme}
+
             sx={{
               borderRadius: 1,
+              cursor: "pointer",
               mb: 1,
               color: mode === "dark" ? "#fff" : "#1a1a1a",
             }}
@@ -161,6 +186,7 @@ export default function DashboardNavBase({
             button="true"
             onClick={onLogout}
             sx={{
+              cursor: "pointer",
               borderRadius: 1,
               color: mode === "dark" ? "#fff" : "#1a1a1a",
             }}

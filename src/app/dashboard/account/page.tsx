@@ -15,43 +15,45 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { editAccount } from "@/actions/clientsDashboard";
 import { logout } from "@/actions/auth";
+import { useTheme } from "@mui/material/styles";
 
-export default function Guests() {
+export default function AccountSettings() {
   const { user } = useAuth();
   const router = useRouter();
+  const theme = useTheme();
 
   const [username, setUsername] = useState<string>(user?.username || "");
   const [old_password, setOldPassword] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [comfirmPassword, setComfirmPassowrd] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const [disableSubmit, setDisableSubmit] = useState(true);
   const [loading, setLoading] = useState(false);
   const { showError, showSuccess } = useToast();
 
   useEffect(() => {
-    if (username || (old_password && password && comfirmPassword)) {
+    if (username || (old_password && password && confirmPassword)) {
       setDisableSubmit(false);
     } else {
       setDisableSubmit(true);
     }
-  }, [username, old_password, password, comfirmPassword, router]);
+  }, [username, old_password, password, confirmPassword]);
 
-  async function sucesslogout() {
+  async function successLogout() {
     await logout();
     router.push("/");
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     setLoading(true);
     e.preventDefault();
 
     try {
-      if (password !== comfirmPassword) {
+      if (password !== confirmPassword) {
         showError("Passwords do not match. Please try again.");
         setLoading(false);
         return;
-      } else if (old_password === password && old_password != "") {
+      } else if (old_password === password && old_password !== "") {
         showError("New password cannot be the same as the old password.");
         setLoading(false);
         return;
@@ -71,22 +73,16 @@ export default function Guests() {
         } else if (result?.password) {
           showSuccess("Password updated successfully!");
           setLoading(false);
-          sucesslogout();
+          successLogout();
         }
       } else {
-        showError(
-          result?.message || "Failed to update account. Please try again."
-        );
+        showError(result?.message || "Failed to update account. Please try again.");
         setLoading(false);
       }
     } catch (err) {
       setLoading(false);
       console.error(err);
-      if (err.response?.data?.error) {
-        showError(err.response.data.error);
-      } else {
-        showError("Failed to change settings!");
-      }
+      showError(err.response?.data?.error || "Failed to change settings!");
     }
   };
 
@@ -95,44 +91,37 @@ export default function Guests() {
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
-            backgroundColor: "#F1F5F9",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             minHeight: "100vh",
             padding: "20px",
+            backgroundColor: theme.palette.mode === "dark" ? "#121212" : "#F1F5F9",
           }}
         >
           <Box
             sx={{
-              backgroundColor: "#fff",
               borderRadius: "12px",
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
               padding: "40px",
               width: "100%",
               maxWidth: "480px",
               display: "flex",
               flexDirection: "column",
               gap: "20px",
+              backgroundColor: theme.palette.mode === "dark" ? "#1E1E1E" : "#fff",
             }}
           >
             <Box display="flex" alignItems="center" justifyContent="center">
               <Link href="/" underline="none">
-                <Avatar
-                  alt="Aazimtak Logo"
-                  src="/assets/img/Alogo.png"
-                  sx={{ width: 50, height: 50 }}
-                />
+                <Avatar alt="Aazimtak Logo" src="/assets/img/Alogo.png" sx={{ width: 50, height: 50 }} />
               </Link>
               <Typography variant="h5" sx={{ marginLeft: 2, fontWeight: 700 }}>
                 AAZIMTAK
               </Typography>
             </Box>
 
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 600, textAlign: "center" }}
-            >
+            <Typography variant="h6" sx={{ fontWeight: 600, textAlign: "center" }}>
               Update Account Settings
             </Typography>
 
@@ -143,10 +132,8 @@ export default function Guests() {
               fullWidth
               variant="outlined"
               sx={{
-                "& .MuiInputBase-root": {
-                  backgroundColor: "#F4F6F8",
-                },
-                marginBottom: "20px",
+                backgroundColor: theme.palette.mode === "dark" ? "#2E2E2E" : "#F4F6F8",
+                borderRadius: "8px",
               }}
             />
 
@@ -158,10 +145,8 @@ export default function Guests() {
               fullWidth
               variant="outlined"
               sx={{
-                "& .MuiInputBase-root": {
-                  backgroundColor: "#F4F6F8",
-                },
-                marginBottom: "20px",
+                backgroundColor: theme.palette.mode === "dark" ? "#2E2E2E" : "#F4F6F8",
+                borderRadius: "8px",
               }}
             />
 
@@ -173,25 +158,21 @@ export default function Guests() {
               fullWidth
               variant="outlined"
               sx={{
-                "& .MuiInputBase-root": {
-                  backgroundColor: "#F4F6F8",
-                },
-                marginBottom: "20px",
+                backgroundColor: theme.palette.mode === "dark" ? "#2E2E2E" : "#F4F6F8",
+                borderRadius: "8px",
               }}
             />
 
             <TextField
-              label="Confirm Password"
+              label="Confirm New Password"
               type="password"
-              value={comfirmPassword}
-              onChange={(e) => setComfirmPassowrd(e.target.value)}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               fullWidth
               variant="outlined"
               sx={{
-                "& .MuiInputBase-root": {
-                  backgroundColor: "#F4F6F8",
-                },
-                marginBottom: "20px",
+                backgroundColor: theme.palette.mode === "dark" ? "#2E2E2E" : "#F4F6F8",
+                borderRadius: "8px",
               }}
             />
 
@@ -208,7 +189,7 @@ export default function Guests() {
               }}
               disabled={disableSubmit}
             >
-              {loading ? "Loading..." : "Save Changes"}
+              {loading ? "Loading..." : "Update Settings"}
             </Button>
           </Box>
         </Box>

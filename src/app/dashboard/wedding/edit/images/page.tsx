@@ -9,8 +9,30 @@ import ImagesLayout5 from "@/components/Card/ImagesLayout5";
 import { useAuth } from "@/context/AuthProvider";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
 import WeddingCard from "@/components/WeddingCard";
+import { getWeddingData } from "@/actions/clientsDashboard";
+
+const guest = {
+  name: "John Doe",
+  number_of_people: 2,
+  number_of_kids: 1,
+};
+
+const WeddingDetails =  {
+    wedding_date: "2026-11-23",
+    ceremony_time: "11:00",
+    ceremony_place: "Somewhere",
+    ceremony_city: "Unknow",
+    ceremony_maps: "wdwdwd",
+    party_time: "16:00",
+    party_place: "Somewhere",
+    party_city: "Unknow",
+    party_maps: "wdwdw",
+    gift_type: "Bank",
+    gift_details: "Bank-12-23-ADC",
+  };
 export default function EditImages() {
   const { user } = useAuth();
+
   const [userImages, setUserImages] = useState<
     { layout: number; path: string }[]
   >([]);
@@ -41,8 +63,6 @@ export default function EditImages() {
       groupedImages[layoutKey].push(process.env.NEXT_PUBLIC_API_URL + path);
     });
   });
-
-  console.log("Grouped Images:", groupedImages);
 
   return (
     <DashboardClientLayout>
@@ -104,7 +124,7 @@ export default function EditImages() {
           }
         })}
       </div>
-      <WeddingCard weddingDetails={weddingDetails} guest={guest} />
+      <WeddingCard weddingDetails={WeddingDetails} guest={guest} />
     </DashboardClientLayout>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 
 const PoweredBy = () => {
   return (
@@ -14,11 +14,15 @@ const PoweredBy = () => {
       <Typography variant="body1" color="textSecondary" align="center" mr={1}>
         Powered by
       </Typography>
+      <Link href="/">
       <Typography
         variant="body1"
         color="primary"
         display="flex"
         alignItems="center"
+        sx={{
+          textDecoration: "none"
+        }}
       >
         <img
           src="/assets/img/Alogo.png"
@@ -27,6 +31,7 @@ const PoweredBy = () => {
         />
         AAZIMTAK
       </Typography>
+      </Link>
     </Box>
   );
 };

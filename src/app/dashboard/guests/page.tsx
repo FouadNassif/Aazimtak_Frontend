@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getAllGuests, editGuest, deleteGuest } from "@/actions/clientsDashboard"; // Import editGuest
+import { getAllGuests, editGuest, deleteGuest } from "@/actions/clientsDashboard";
 import { useToast } from "@/hooks/useToast";
 import { DataGrid } from "@mui/x-data-grid";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
@@ -144,20 +144,28 @@ export default function Guests() {
           width: "100%",
           justifyContent: "center",
           alignItems: "center",
+          overflowX: "auto", // Make sure the table is scrollable horizontally on small screens
+          paddingTop: 10, // Adds space below the navbar
         }}
       >
-        <Typography sx={{ fontSize: "25px", fontWeight: "600", my: 5 }}>
+        <Typography sx={{ fontSize: "25px", fontWeight: "600", my: 5, color: "inherit" }}>
           ALL GUESTS
         </Typography>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pagination
-          pageSizeOptions={[10, 20, 30, 40, 50]}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 10, page: 0 } },
-          }}
-        />
+        <div style={{ width: "100%", maxWidth: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pagination
+            pageSizeOptions={[10, 20, 30, 40, 50]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 10, page: 0 } },
+            }}
+            sx={{
+              width: "100%",
+              minWidth: 300, // Ensures the grid takes full width on mobile
+            }}
+          />
+        </div>
       </Box>
       {isModalOpen && selectedGuest && (
         <EditModal

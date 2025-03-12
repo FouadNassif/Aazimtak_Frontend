@@ -2,10 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { getAllUserImages } from "@/actions/UploadImages";
-import ImagesLayout2 from "@/components/Card/ImagesLayout2";
-import ImagesLayout3 from "@/components/Card/ImagesLayout3";
-import ImagesLayout4 from "@/components/Card/ImagesLayout4";
-import ImagesLayout5 from "@/components/Card/ImagesLayout5";
 import { useAuth } from "@/context/AuthProvider";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
 import { getWeddingData } from "@/actions/clientsDashboard";

@@ -1,108 +1,34 @@
-# Project Setup Guide
+# 🎉 Aazimtak – Wedding Invitation Platform  
 
-This README file will guide you through setting up the project. Follow these steps to ensure everything works correctly.
+Aazimtak is a stylish and user-friendly platform designed to create and manage digital wedding invitations. With an elegant interface and customizable templates, it allows couples to share their special moments seamlessly.  
 
-## Prerequisites
-Make sure you have the following installed on your system:
+## 🌟 Features  
 
-- **Node.js** (version 16 or higher) and npm (Node Package Manager)
-- **Git** (for version control)
-- **A package manager** (like `npm` or `yarn`)
-- **A code editor** (like Visual Studio Code)
+- **Custom Wedding Invitations** – Create beautiful and personalized digital wedding cards.  
+- **Guest Management** – Track RSVPs, filter guests by status, and manage attendees easily.  
+- **Dashboard Insights** – View real-time statistics on guests, attendees, and invitation engagement.  
+- **Interactive Experience** – Smooth animations and a responsive design for an engaging user experience.  
+- **Dark/Light Mode** – Customize the appearance with theme toggling.  
+- **Admin Panel** – Manage invitations, guests, and settings with an intuitive admin dashboard.  
 
-## Steps to Setup the Project
+## 🚀 Technologies Used  
 
-### 1. Clone the Repository
-```bash
-git clone <repository_url>
-```
-Replace `<repository_url>` with the actual repository link. This will create a local copy of the project.
+- **Frontend:** Next.js, React, Material UI, Tailwind CSS  
+- **Backend:** Laravel, PHP  
+- **Database:** MySQL  
+- **Authentication:** Laravel Sanctum  
+- **Hosting:** Vercel (Frontend), Laravel Forge (Backend)  
 
-### 2. Navigate to the Project Directory
-```bash
-cd <project_directory>
-```
-Replace `<project_directory>` with the name of the cloned folder.
+## 📌 Future Enhancements  
 
-### 3. Install Dependencies
-Run the following command to install all necessary dependencies:
-```bash
-npm install
-```
-If you're using `yarn`, you can run:
-```bash
-yarn install
-```
+- 🎨 More customizable invitation templates  
+- 📧 Email and SMS notifications for guests  
+- 📊 Enhanced analytics on RSVP engagement  
+- 📱 Fully optimized mobile responsiveness  
 
-### 4. Environment Variables
-Create a `.env` file in the root directory of the project and add the following environment variables:
+## 📷 Showcase  
 
-```env
-REACT_APP_API_URL=<API_endpoint>
-REACT_APP_AUTH_KEY=<Authentication_Key>
-```
-Replace `<API_endpoint>` and `<Authentication_Key>` with the appropriate values for your application.
+Check out a live demo of a test invitation:  
+🔗 [Test Invitation](https://aazimtakk.vercel.app/4/FouadAndAlexa/Test%20Guest)  
 
-### 5. Start the Development Server
-To start the project, run the following command:
-```bash
-npm start
-```
-Or, if you're using `yarn`:
-```bash
-yarn start
-```
-This will start the development server and open the application in your default browser.
-
-### 6. Build the Project
-For production, build the project by running:
-```bash
-npm run build
-```
-Or, if you're using `yarn`:
-```bash
-yarn build
-```
-The build output will be in the `build/` folder.
-
-## Additional Notes
-
-### Linting and Code Formatting
-To lint and format the code, run:
-```bash
-npm run lint
-npm run format
-```
-
-### Testing
-Run tests using the following command:
-```bash
-npm test
-```
-
-### Dark Mode Setup
-To enable the dark mode feature across the dashboard, ensure you have a toggle button implemented that updates the theme context. Use Material-UI's `ThemeProvider` to toggle between light and dark themes.
-
-### Troubleshooting
-- If you encounter issues with dependency versions, delete the `node_modules` folder and `package-lock.json` (or `yarn.lock`) and then reinstall:
-  ```bash
-  npm install
-  ```
-- Make sure your `.env` file is correctly configured.
-
-## Directory Structure
-```
-project_root
-|
-|-- public/          # Static files like index.html
-|-- src/             # Source files
-    |-- components/  # Reusable React components
-    |-- context/     # Context API for global states
-    |-- pages/       # Application pages
-    |-- styles/      # Global styles and theme setup
-|-- .env             # Environment variables
-|-- package.json     # Project metadata and dependencies
-|-- README.md        # Project setup and information
-```
-
-You're all set! If you have any issues, feel free to reach out or consult the documentation.
+_Note: The site is still under development and may not be fully responsive on mobile devices._  
