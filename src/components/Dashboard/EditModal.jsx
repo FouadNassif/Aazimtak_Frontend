@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Card, CardContent, TextField, Button, IconButton, Backdrop } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useTheme } from "@mui/material/styles"; // Import to access the theme
+import { useTheme } from "@mui/material/styles";
 
 export default function EditModal({ guest, open, onClose, onSave, onDelete }) {
-  const theme = useTheme(); // Get the current theme
+  const theme = useTheme();
   const [name, setName] = useState(guest.name);
   const [numberOfPeople, setNumberOfPeople] = useState(guest.numberOfPeople);
   const [numberOfKids, setNumberOfKids] = useState(guest.numberOfKids);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Reset form fields when guest prop changes
+  useEffect(() => {
+    setName(guest.name);
+    setNumberOfPeople(guest.numberOfPeople);
+    setNumberOfKids(guest.numberOfKids);
+  }, [guest]);
 
   const handleNameChange = (event) => setName(event.target.value);
   const handleNumberOfPeopleChange = (event) => setNumberOfPeople(event.target.value);
@@ -29,32 +36,34 @@ export default function EditModal({ guest, open, onClose, onSave, onDelete }) {
   return (
     <>
       {/* Edit Modal */}
-      <Backdrop open={open} sx={{ zIndex: 10, backdropFilter: "blur(8px)" }}>
+      <Backdrop open={open} sx={{ zIndex: 10, backdropFilter: "blur(4px)" }}>
         <Card
           sx={{
-            width: "100%", // Make the card width 100% of the container
-            maxWidth: 500, // Set a maximum width for larger screens
+            width: "100%",
+            maxWidth: 500,
             bgcolor: theme.palette.background.paper,
             boxShadow: 6,
             borderRadius: 3,
             padding: 3,
             position: "relative",
             color: theme.palette.text.primary,
-            margin: "0 20px", // Add some margin to avoid the modal touching the sides on mobile
+            margin: "0 20px",
+            transition: "transform 0.3s ease-out, opacity 0.3s ease-out",
+            transform: open ? "scale(1)" : "scale(0.9)",
+            opacity: open ? 1 : 0,
             '@media (max-width:600px)': {
-              width: "90%", // Ensure the modal doesn't take up more than 90% of the screen width on mobile
-              maxWidth: "none", // Allow it to grow naturally in small screens
+              width: "90%",
+              maxWidth: "none",
             }
           }}
         >
-
           <IconButton
             onClick={onClose}
             sx={{
               position: "absolute",
               top: 8,
               right: 8,
-              color: theme.palette.text.primary, // Ensure icon color adapts
+              color: theme.palette.text.primary,
             }}
           >
             <CloseIcon />
@@ -72,10 +81,10 @@ export default function EditModal({ guest, open, onClose, onSave, onDelete }) {
               required
               sx={{ mb: 2 }}
               InputProps={{
-                style: { color: theme.palette.text.primary }, // Set input text color based on theme
+                style: { color: theme.palette.text.primary },
               }}
               InputLabelProps={{
-                style: { color: theme.palette.text.primary }, // Set label color based on theme
+                style: { color: theme.palette.text.primary },
               }}
             />
             <TextField
@@ -145,10 +154,7 @@ export default function EditModal({ guest, open, onClose, onSave, onDelete }) {
       </Backdrop>
 
       {/* Delete Confirmation Modal */}
-      <Backdrop
-        open={isDeleteModalOpen}
-        sx={{ zIndex: 20, backdropFilter: "blur(8px)" }}
-      >
+      <Backdrop open={isDeleteModalOpen} sx={{ zIndex: 20, backdropFilter: "blur(4px)" }}>
         <Card
           sx={{
             width: 400,
@@ -157,7 +163,7 @@ export default function EditModal({ guest, open, onClose, onSave, onDelete }) {
             borderRadius: 3,
             padding: 3,
             position: "relative",
-            color: theme.palette.text.primary, // Ensure text is visible in dark mode
+            color: theme.palette.text.primary,
           }}
         >
           <IconButton

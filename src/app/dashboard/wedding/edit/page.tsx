@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/context/AuthProvider";
 import { getWeddingData, saveWeddingData } from "@/actions/clientsDashboard";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
+import verses from "@/data/verses";
+import Input from "@/components/form/input";
 
 export default function EditWedding() {
   const { user } = useAuth();
@@ -84,7 +86,7 @@ export default function EditWedding() {
     } catch (error) {
       showError("Failed to load dashboard data. Please try again.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -94,6 +96,7 @@ export default function EditWedding() {
         sx={{
           display: "flex",
           justifyContent: "center",
+          flexDirection: "column",
           alignItems: "center",
           minHeight: "100vh",
           backgroundColor: "#F1F5F9",
@@ -112,11 +115,6 @@ export default function EditWedding() {
             }}
           >
             <Box textAlign="center" mb={3}>
-              <Avatar
-                alt="Wedding Icon"
-                src="/assets/img/wedding-icon.png"
-                sx={{ width: 60, height: 60, margin: "0 auto" }}
-              />
               <Typography variant="h4" fontWeight={600} mt={2}>
                 Edit Wedding Details
               </Typography>
@@ -242,6 +240,35 @@ export default function EditWedding() {
             </form>
           </Paper>
         )}
+        <Paper
+          elevation={3}
+          sx={{
+            marginTop: "30px",
+            padding: 5,
+            borderRadius: 4,
+            width: "100%",
+            maxWidth: 900,
+          }}
+        >
+
+          <Box textAlign="center" mb={3}>
+            <Typography variant="h4" fontWeight={600} mt={2}>
+              Edit Verse
+            </Typography>
+          </Box>
+
+          <Box sx={{
+            display: "flex",
+            flexWrap: "wrap",
+          }}>
+            {verses.map((verse) => (
+              <Paper elevation={4} key={verse.id} sx={{padding: 2, width: "100%", marginY: 2}}>
+                <Typography sx={{fontSize: "18px"}}>{verse.verse}</Typography>
+                <Typography sx={{fontSize: "14px"}}>{verse.reference}</Typography>
+              </Paper>
+            ))}
+          </Box>
+        </Paper>
       </Box>
     </DashboardClientLayout>
   );
