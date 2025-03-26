@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     "src/app/login.jsx",
     "src/components/Dashboard/EditModal.jsx",
-    "src/components/Card/ImagesLayout5.jsx"
+    "src/components/Card/ImagesLayout5.tsx"
   ],
   "exclude": ["node_modules"]
 }

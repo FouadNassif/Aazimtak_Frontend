@@ -2,6 +2,7 @@
 import React from "react";
 import { Button, Box, Typography, Container } from "@mui/material";
 import { motion } from "framer-motion";
+import Image from 'next/image'
 
 const Hero = () => {
   return (
@@ -9,10 +10,6 @@ const Hero = () => {
       component="section"
       sx={{
         position: "relative",
-        backgroundImage: "url('/assets/img/Welcome.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
         height: "100vh",
         display: "flex",
         alignItems: "center",
@@ -26,13 +23,33 @@ const Hero = () => {
           left: 0,
           right: 0,
           bottom: 0,
+          zIndex: 1,
+        }}
+      >
+        <Image
+          src="/assets/img/Welcome.jpg"
+          alt="Wedding Planning"
+          layout="fill"
+          objectFit="cover"
+          quality={100}
+        />
+      </Box>
+      
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           background:
             "linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.7))",
-          zIndex: 1,
+          zIndex: 2,
         }}
       />
 
-      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
+      {/* Content Section */}
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 3 }}>
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -60,7 +77,7 @@ const Hero = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Wedding planning starts here
+              Your Wedding, Your Invitation, Your Story.
             </Typography>
 
             <Typography
@@ -73,8 +90,7 @@ const Hero = () => {
                 textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
               }}
             >
-              Design a personalized website, create an all-in-one registry, and
-              experience wedding planning the way it should be.
+              Design Stunning Wedding Invitations and Share Them Instantly.
             </Typography>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

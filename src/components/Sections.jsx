@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import { Box, Typography, Button, Container, Grid } from "@mui/material";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -21,7 +22,7 @@ const Section = ({ imgSrc, title, description, index }) => {
       transition={{ duration: 0.8, delay: 0.2 }}
       sx={{
         py: { xs: 8, md: 12 },
-        backgroundColor: isEven ? "white" : "#f8fafc",
+        backgroundColor: isEven ? "#f1f1f1" : "#ffffff",
       }}
     >
       <Container maxWidth="lg">
@@ -34,18 +35,26 @@ const Section = ({ imgSrc, title, description, index }) => {
           {imgSrc && (
             <Grid item xs={12} md={6}>
               <Box
-                component={motion.img}
-                src={imgSrc}
-                alt={title}
-                whileHover={{ scale: 1.03 }}
+                component={motion.div}
+                whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
                 sx={{
+                  position: "relative",
                   width: "100%",
-                  height: "auto",
+                  height: "300px", // Adjust based on your design
                   borderRadius: "20px",
+                  overflow: "hidden",
                   boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
                 }}
-              />
+              >
+                <Image
+                  src={imgSrc}
+                  alt={title}
+                  layout="fill"
+                  objectFit="cover"
+                  priority
+                />
+              </Box>
             </Grid>
           )}
 

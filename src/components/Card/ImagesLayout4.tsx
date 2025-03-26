@@ -15,7 +15,7 @@ const ImagesLayout4: React.FC<Props> = ({
 }) => {
   const imageStyle = {
     width: "100%",
-    objectFit: "cover" as "cover",
+    objectFit: "cover" as const,
   };
 
   return (

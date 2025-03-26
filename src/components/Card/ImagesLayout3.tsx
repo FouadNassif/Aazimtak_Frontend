@@ -10,7 +10,7 @@ const ImagesLayout3: React.FC<Props> = ({ image1, image2, image3 }) => {
   const imageStyle = {
     width: "100%",
     height: "100%",
-    objectFit: "cover" as "cover",
+    objectFit: "cover" as const,
   };
 
   return (
