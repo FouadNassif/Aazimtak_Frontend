@@ -1,6 +1,7 @@
 "use server";
 
 import { LaravelInstance } from "./axios";
+
 interface UserImageResponse {
   message: string;
   paths: string[]; // Array of image URLs (strings)
@@ -67,6 +68,30 @@ export async function getAllUserImages({
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     console.error("Error uploading images:", errorMessage);
+    throw new Error(errorMessage);
+  }
+}
+
+export async function deleteImage({
+  userId,
+  imageId,
+}: {
+  userId: number;
+  imageId: number;
+}): Promise<void> {
+  try {
+    const axiosClient = await LaravelInstance();
+    const response = await axiosClient.post("/dashboard/wedding/delete-image", {
+      userId,
+      imageId,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to delete image: " + response.status);
+    }
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    console.error("Error deleting image:", errorMessage);
     throw new Error(errorMessage);
   }
 }

@@ -24,7 +24,7 @@ const DashboardClientLayout = ({ children }) => {
       text: "Wedding",
       subLinks: [
         { text: "Edit Wedding", link: "/dashboard/wedding/edit" },
-        { text: "Edit Wedding Images", link: "/dashboard/wedding/edit/images" },
+        // { text: "Edit Wedding Images", link: "/dashboard/wedding/edit/images" },
         { text: "Show Wedding", link: "/dashboard/wedding/show" },
       ],
     },
@@ -44,7 +44,7 @@ const DashboardClientLayout = ({ children }) => {
           router.push("/");
         }}
       >
-        <Box sx={{ p: 3 }}>{children}</Box>
+        <Box>{children}</Box>
       </DashboardNavBase>
     </AuthLayout>
   );

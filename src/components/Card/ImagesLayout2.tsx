@@ -1,5 +1,4 @@
 import React from "react";
-import Image from 'next/image'
 
 interface Props {
   image1: string;
@@ -15,17 +14,15 @@ const ImagesLayout2: React.FC<Props> = ({ image1, image2 }) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-      <div style={{ width: "100%", height: "16rem", position: "relative" }}>
-        <Image
-          src={image1}
-          alt="Wedding Image"
-          layout="fill"
-          objectFit="cover"
-          quality={100}
-        />
+      {/* First Image */}
+      <div style={{ width: "100%", height: "16rem" }}>
+        <img src={image1} alt="Wedding Image" style={imageStyle} />
       </div>
+
+      {/* Second Image */}
       <div style={{ width: "100%", height: "16rem" }}>
         <img src={image2} alt="Image 2" style={imageStyle} />
+        
       </div>
     </div>
   );

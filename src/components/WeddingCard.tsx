@@ -1,4 +1,5 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
+import { useEffect, useState } from "react";
 import ImagesLayout5 from "@/components/Card/ImagesLayout5";
 import Countdown from "@/components/Card/CountDown";
 import DateDisplay from "@/components/Card/DateDisplay";
@@ -32,10 +33,97 @@ interface WeddingDetailsProps {
   };
 }
 
+const imageUrls = [
+  "/assets/img/img1.jpg",
+  "/assets/img/Welcome.jpg",
+  "/assets/img/Support.jpg",
+  "/assets/img/Welcome2.jpg",
+  "/assets/img/Welcome3.jpg",
+];
+
 export default function WeddingCard({
   weddingDetails,
   guest,
 }: WeddingDetailsProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadedImages, setLoadedImages] = useState(0);
+
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = imageUrls.map((url) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = () => {
+            setLoadedImages((prev) => prev + 1);
+            resolve(url);
+          };
+          img.onerror = reject;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error preloading images:", error);
+        setIsLoading(false);
+      }
+    };
+
+    preloadImages();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #f3e5ab, #f8f5f2)",
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: "center",
+            background: "rgba(255, 255, 255, 0.9)",
+            padding: "40px",
+            borderRadius: "20px",
+            boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <CircularProgress
+            size={60}
+            sx={{
+              color: "#d4a373",
+              marginBottom: "20px",
+            }}
+          />
+          <Box
+            sx={{
+              color: "#2c3e50",
+              fontSize: "18px",
+              fontFamily: "'Roboto', sans-serif",
+            }}
+          >
+            Loading your invitation...
+          </Box>
+          <Box
+            sx={{
+              color: "#666",
+              fontSize: "14px",
+              marginTop: "10px",
+            }}
+          >
+            {Math.round((loadedImages / imageUrls.length) * 100)}% complete
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <>
       <ImagesLayout5

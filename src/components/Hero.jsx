@@ -67,7 +67,7 @@ const Hero = () => {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: "2.5rem", md: "4rem" },
+                fontSize: { xs: "2.1rem", md: "4rem" },
                 fontWeight: 800,
                 mb: 3,
                 textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
@@ -84,6 +84,7 @@ const Hero = () => {
               variant="h5"
               sx={{
                 mb: 5,
+                fontSize: { xs: "1.3rem", md: "1.7rem" },
                 lineHeight: 1.6,
                 fontWeight: 400,
                 opacity: 0.9,
