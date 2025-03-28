@@ -10,29 +10,30 @@ import WeddingCard from "@/components/WeddingCard";
 import ErrorMessage from "@/components/ErrorMessage";
 import { getAllUserImages, type UserImage } from "@/actions/UploadImages";
 
-
 const GuestPage = () => {
   const params = useParams();
   const router = useRouter(); 
-  
-  const { wedding_id, guest_name: encodedGuestName } = params;
 
-  const [groom_name, bride_name] = params["groom_name]And[bride_name"]
-    ? String(params["groom_name]And[bride_name"])
-        .split("And")
-        .map((name) => decodeURIComponent(name))
+  // Ensure params are strings, not arrays
+  const wedding_id = Array.isArray(params.wedding_id) ? params.wedding_id[0] : params.wedding_id;
+  const encodedGuestName = Array.isArray(params.guest_name) ? params.guest_name[0] : params.guest_name;
+
+  const groomBrideString = Array.isArray(params["groom_name]And[bride_name]"])
+    ? params["groom_name]And[bride_name]"][0]
+    : params["groom_name]And[bride_name]"];
+
+  const [groom_name, bride_name] = groomBrideString
+    ? groomBrideString.split("And").map(decodeURIComponent)
     : [null, null];
 
-  const guest_name = encodedGuestName
-    ? decodeURIComponent(encodedGuestName)
-    : null;
+  const guest_name = encodedGuestName ? decodeURIComponent(encodedGuestName) : null;
   const weddingIdNumber = wedding_id ? Number(wedding_id) : NaN;
 
   const [wedding, setWedding] = useState(null);
   const [weddingDetails, setWeddingDetails] = useState(null);
   const [guest, setGuest] = useState(null);
   const [ready, setReady] = useState(false);
-  const [error, setError] = useState<string | null>(null); 
+  const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<UserImage[]>([]);
 
   useEffect(() => {
@@ -43,23 +44,21 @@ const GuestPage = () => {
           setImages(response.images);
         }
       } catch (err) {
-        console.error('Error fetching images:', err);
+        console.error("Error fetching images:", err);
       }
     };
-  
+
     getAllImages();
   }, [weddingIdNumber]);
 
   useEffect(() => {
     const handleSubmit = async () => {
-      // Validate required data before making the API call
       if (isNaN(weddingIdNumber) || !guest_name || !groom_name || !bride_name) {
         setError("Invalid wedding ID, groom/bride name, or guest name");
         return;
       }
 
       try {
-        // Fetch wedding card details
         const result = await getWeddingCardDetails({
           wedding_id: weddingIdNumber,
           guest_name: guest_name,
@@ -78,7 +77,7 @@ const GuestPage = () => {
           setGuest(result.guest);
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
         setError("An error occurred while fetching wedding details");
       }
     };
@@ -93,7 +92,7 @@ const GuestPage = () => {
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        router.push("/"); 
+        router.push("/");
       }, 3000);
     }
   }, [error, router]);
@@ -113,13 +112,9 @@ const GuestPage = () => {
       {error ? (
         <ErrorMessage message={error} />
       ) : ready ? (
-        <WeddingCard weddingDetails={weddingDetails} guest={guest}  images={images}/>
+        <WeddingCard weddingDetails={weddingDetails} guest={guest} images={images} />
       ) : wedding && weddingDetails ? (
-        <Card
-          wedding={wedding}
-          weddingDetails={weddingDetails}
-          setReady={setReady}
-        />
+        <Card wedding={wedding} weddingDetails={weddingDetails} setReady={setReady} />
       ) : (
         <Loading />
       )}
