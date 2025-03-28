@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./main.css";
 import AuthProvider from "@/context/AuthProvider";
 import { checkAuth } from "@/actions/auth";
@@ -9,16 +8,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the styles globally
 import { ThemeContextProvider } from "@/context/theme-context"; // Import the ThemeContextProvider
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sourceCodePro = Source_Code_Pro({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-source-code-pro",
 });
 
 export const metadata: Metadata = {
@@ -35,7 +29,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className}`}>
+      <body className={`${inter.variable} ${sourceCodePro.variable}`}>
         <AuthProvider isAuth={authenticated} user={user}>
           <ThemeContextProvider>
             {children}
