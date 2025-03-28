@@ -9,29 +9,31 @@ import Loading from "@/components/Loading";
 import WeddingCard from "@/components/WeddingCard";
 import ErrorMessage from "@/components/ErrorMessage";
 import { getAllUserImages, type UserImage } from "@/actions/UploadImages";
-interface WeddingDetailsProps {
-  weddingDetails: {
-    wedding_date: string;
-    ceremony_time: string;
-    ceremony_place: string;
-    ceremony_city: string;
-    ceremony_maps: string;
-    party_time: string;
-    party_place: string;
-    party_city: string;
-    party_maps: string;
-    gift_type: string;
-    gift_details: string;
-  };
-  guest: {
-    name: string;
-    number_of_people: number;
-    number_of_kids: number;
-  };
+
+// Defining WeddingDetails type interface
+interface WeddingDetails {
+  wedding_date: string;
+  ceremony_time: string;
+  ceremony_place: string;
+  ceremony_city: string;
+  ceremony_maps: string;
+  party_time: string;
+  party_place: string;
+  party_city: string;
+  party_maps: string;
+  gift_type: string;
+  gift_details: string;
 }
+
+interface Guest {
+  name: string;
+  number_of_people: number;
+  number_of_kids: number;
+}
+
 const GuestPage = () => {
   const params = useParams();
-  const router = useRouter(); 
+  const router = useRouter();
 
   // Helper function to safely extract string values
   const getParamString = (param: string | string[] | undefined): string | null => {
@@ -49,9 +51,10 @@ const GuestPage = () => {
   const guest_name = encodedGuestName ? decodeURIComponent(encodedGuestName) : null;
   const weddingIdNumber = wedding_id ? Number(wedding_id) : NaN;
 
-  const [wedding, setWedding] = useState(null);
-  const [weddingDetails, setWeddingDetails] = useState(null);
-  const [guest, setGuest] = useState(null);
+  // Define state with proper types
+  const [wedding, setWedding] = useState<any>(null);
+  const [weddingDetails, setWeddingDetails] = useState<WeddingDetails | null>(null); // Using WeddingDetails type
+  const [guest, setGuest] = useState<Guest | null>(null); // Using Guest type
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<UserImage[]>([]);
@@ -93,7 +96,7 @@ const GuestPage = () => {
 
         if (result) {
           setWedding(result.wedding);
-          setWeddingDetails(result.wedding_detail);
+          setWeddingDetails(result.wedding_detail); // Ensure this is set properly
           setGuest(result.guest);
         }
       } catch (err) {
@@ -132,7 +135,7 @@ const GuestPage = () => {
       {error ? (
         <ErrorMessage message={error} />
       ) : ready ? (
-        <WeddingCard weddingDetails={weddingDetails} guest={guest} images={images} />
+        <WeddingCard weddingDetails={weddingDetails!} guest={guest!} images={images} /> // Ensure non-null values
       ) : wedding && weddingDetails ? (
         <Card wedding={wedding} weddingDetails={weddingDetails} setReady={setReady} />
       ) : (
