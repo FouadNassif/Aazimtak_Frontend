@@ -1,130 +1,154 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getAllUserImages } from "@/actions/UploadImages";
-import ImagesLayout2 from "@/components/Card/ImagesLayout2";
-import ImagesLayout3 from "@/components/Card/ImagesLayout3";
-import ImagesLayout4 from "@/components/Card/ImagesLayout4";
-import ImagesLayout5 from "@/components/Card/ImagesLayout5";
-import { useAuth } from "@/context/AuthProvider";
+import { useState, useRef } from "react";
+import { Box, Button, Card, Typography, Snackbar, Alert, CircularProgress } from "@mui/material";
+import Image from "next/image";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
-import WeddingCard from "@/components/WeddingCard";
-import { getWeddingData } from "@/actions/clientsDashboard";
+import { useAuth } from "@/context/AuthProvider";
+import { uploadSingleImage } from "@/actions/UploadImages";
 
-const guest = {
-  name: "John Doe",
-  number_of_people: 2,
-  number_of_kids: 1,
-};
-
-const WeddingDetails =  {
-    wedding_date: "2026-11-23",
-    ceremony_time: "11:00",
-    ceremony_place: "Somewhere",
-    ceremony_city: "Unknow",
-    ceremony_maps: "wdwdwd",
-    party_time: "16:00",
-    party_place: "Somewhere",
-    party_city: "Unknow",
-    party_maps: "wdwdw",
-    gift_type: "Bank",
-    gift_details: "Bank-12-23-ADC",
-  };
 export default function EditImages() {
   const { user } = useAuth();
-
-  const [userImages, setUserImages] = useState<
-    { layout: number; path: string }[]
-  >([]);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      if (!user?.id) return;
-      try {
-        const images = await getAllUserImages({ userId: user.id });
-        setUserImages(images);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchImages();
-  }, [user]);
-
-  const groupedImages: { [key: number]: string[] } = {};
-
-  Object.entries(userImages).forEach(([layout, images]) => {
-    const layoutKey = Number(layout);
-    if (!groupedImages[layoutKey]) {
-      groupedImages[layoutKey] = [];
-    }
-
-    Object.values(images).forEach((path) => {
-      groupedImages[layoutKey].push(process.env.NEXT_PUBLIC_API_URL + path);
-    });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: "success" | "error";
+  }>({
+    open: false,
+    message: "",
+    severity: "success",
   });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];n
+    if (file) {
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !user?.id) return;
+
+    setIsUploading(true);
+    try {
+      const response = await uploadSingleImage(user.id, selectedFile);
+      
+      setSnackbar({
+        open: true,
+        message: response.message,
+        severity: response.success ? "success" : "error",
+      });
+
+      if (response.success) {
+        setSelectedFile(null);
+        setPreview(null);
+      }
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error instanceof Error ? error.message : "Failed to upload image",
+        severity: "error",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <DashboardClientLayout>
-      <h1 className="text-xl font-bold">Edit Images</h1>
-      <div className="space-y-4">
-        {Object.entries(groupedImages).map(([layout, images]) => {
-          switch (parseInt(layout)) {
-            case 2:
-              return images.length >= 2 ? (
-                <ImagesLayout2
-                  key={layout}
-                  image1={images[0]}
-                  image2={images[1]}
-                />
-              ) : null;
-            case 3:
-              return images.length >= 3 ? (
-                <ImagesLayout3
-                  key={layout}
-                  image1={images[0]}
-                  image2={images[1]}
-                  image3={images[2]}
-                />
-              ) : null;
-            case 4:
-              return images.length >= 4 ? (
-                <ImagesLayout4
-                  key={layout}
-                  image1={images[0]}
-                  image2={images[1]}
-                  image3={images[2]}
-                  image4={images[3]}
-                />
-              ) : null;
-            case 5:
-              return images.length >= 5 ? (
-                <ImagesLayout5
-                  key={layout}
-                  image1={images[0]}
-                  image2={images[1]}
-                  image3={images[2]}
-                  image4={images[3]}
-                  image5={images[4]}
-                />
-              ) : null;
-            case 6:
-              return images.length >= 5 ? (
-                <ImagesLayout5
-                  key={layout}
-                  image1={images[0]}
-                  image2={images[1]}
-                  image3={images[2]}
-                  image4={images[3]}
-                  image5={images[4]}
-                />
-              ) : null;
-            default:
-              return null;
-          }
-        })}
-      </div>
-      <WeddingCard weddingDetails={WeddingDetails} guest={guest} />
+      <Box sx={{ p: { xs: 2, md: 4 } }}>
+        <Typography variant="h4" fontWeight="bold" sx={{ mb: 4 }}>
+          Upload Wedding Image
+        </Typography>
+
+        <Card
+          sx={{
+            p: 3,
+            maxWidth: 500,
+            mx: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              height: 300,
+              position: "relative",
+              borderRadius: 2,
+              overflow: "hidden",
+              bgcolor: "grey.100",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {preview ? (
+              <Image
+                src={preview}
+                alt="Preview"
+                fill
+                style={{ objectFit: "cover" }}
+              />
+            ) : (
+              <Typography color="text.secondary">
+                No image selected
+              </Typography>
+            )}
+          </Box>
+
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+          />
+
+          <Button
+            variant="outlined"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+          >
+            Select Image
+          </Button>
+
+          <Button
+            variant="contained"
+            onClick={handleUpload}
+            disabled={!selectedFile || isUploading}
+            sx={{ minWidth: 200 }}
+          >
+            {isUploading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Upload Image"
+            )}
+          </Button>
+        </Card>
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+        >
+          <Alert
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </Box>
     </DashboardClientLayout>
   );
 }

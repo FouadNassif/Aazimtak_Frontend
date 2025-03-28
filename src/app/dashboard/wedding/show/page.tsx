@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllUserImages } from "@/actions/UploadImages";
 import { useAuth } from "@/context/AuthProvider";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
 import { getWeddingData } from "@/actions/clientsDashboard";
