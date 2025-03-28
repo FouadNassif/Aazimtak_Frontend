@@ -57,6 +57,7 @@ export interface WeddingStats {
     recentGuestUpdates: RecentGuestUpdate[];
     cityDistribution: CityDistribution[];
     systemStats: SystemStats;
+    message?: string; 
   }
   
   // Request Body for adding a wedding

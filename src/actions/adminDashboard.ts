@@ -3,7 +3,7 @@
 import { LaravelInstance } from "./axios";
 import { DashboardResponse, AddWeddingRequest, AddWeddingResponse, GetAllWeddingsResponse } from '@/types/admindashboard';
 
-export async function getAdminDashboard(): Promise<DashboardResponse> {
+export async function getAdminDashboard(): Promise<DashboardResponse | null> {
   try {
     const axiosClient = await LaravelInstance();
     const response = await axiosClient.post("/admin/dashboard");
@@ -14,7 +14,7 @@ export async function getAdminDashboard(): Promise<DashboardResponse> {
       "Error in getAdminDashboard API call:",
       err instanceof Error ? err.message : "Unknown error"
     );
-    return { status: false, message: "Error fetching dashboard data" };
+    return null; // Return null instead of an object with an unknown property
   }
 }
 
