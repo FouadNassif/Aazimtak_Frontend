@@ -57,16 +57,17 @@ export async function getAllWedding(): Promise<GetAllWeddingsResponse> {
       );
     }
 
-    return response.data as GetAllWeddingsResponse;  // Ensure response matches expected type
+    return response.data as GetAllWeddingsResponse;
   } catch (err) {
     console.error(
       "Error in getAllWedding API call:",
       err instanceof Error ? err.message : "Unknown error"
     );
 
-    // Return a valid `GetAllWeddingsResponse` structure
+    // Correct return type: Only `weddings` should be included
     return {
-      weddings: [],  // Return an empty array instead of an invalid object
+      weddings: [], // Return an empty array if there's an error
     };
   }
 }
+
