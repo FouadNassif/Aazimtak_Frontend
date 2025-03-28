@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import AuthLayout from "@/layouts/AuthLayout";
 import DashboardNavBase from "@/components/Dashboard/DashboardNav";
 import { useAuth } from "@/context/AuthProvider";

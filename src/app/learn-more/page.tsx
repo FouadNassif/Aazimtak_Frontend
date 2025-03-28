@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 "use client";
 import React, { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -21,6 +23,12 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import StarIcon from "@mui/icons-material/Star";
 import Image from "next/image";
 import Link from "next/link";
+import Hero from "@/components/Hero";
+import Sections from "@/components/Sections";
+import Features from "@/components/Features";
+import Pricing from "@/components/Pricing";
+import FAQ from "@/components/FAQ";
+import Contact from "@/components/Contact";
 
 const sections = [
   {

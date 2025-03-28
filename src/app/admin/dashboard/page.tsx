@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -37,7 +39,7 @@ import {
   Person,
   PhotoCamera,
 } from "@mui/icons-material";
-import { getAdminDashboard } from "@/actions/adminDashboard";
+import { getAdminDashboard } from "@/actions/admin";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
 

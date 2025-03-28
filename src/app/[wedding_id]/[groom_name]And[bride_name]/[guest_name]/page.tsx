@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 "use client";
 
 import { getWeddingCardDetails } from "@/actions/wedding";
