@@ -9,18 +9,38 @@ import Loading from "@/components/Loading";
 import WeddingCard from "@/components/WeddingCard";
 import ErrorMessage from "@/components/ErrorMessage";
 import { getAllUserImages, type UserImage } from "@/actions/UploadImages";
-
+interface WeddingDetailsProps {
+  weddingDetails: {
+    wedding_date: string;
+    ceremony_time: string;
+    ceremony_place: string;
+    ceremony_city: string;
+    ceremony_maps: string;
+    party_time: string;
+    party_place: string;
+    party_city: string;
+    party_maps: string;
+    gift_type: string;
+    gift_details: string;
+  };
+  guest: {
+    name: string;
+    number_of_people: number;
+    number_of_kids: number;
+  };
+}
 const GuestPage = () => {
   const params = useParams();
   const router = useRouter(); 
 
-  // Ensure params are strings, not arrays
-  const wedding_id = Array.isArray(params.wedding_id) ? params.wedding_id[0] : params.wedding_id;
-  const encodedGuestName = Array.isArray(params.guest_name) ? params.guest_name[0] : params.guest_name;
+  // Helper function to safely extract string values
+  const getParamString = (param: string | string[] | undefined): string | null => {
+    return Array.isArray(param) ? param[0] : param ?? null;
+  };
 
-  const groomBrideString = Array.isArray(params["groom_name]And[bride_name]"])
-    ? params["groom_name]And[bride_name]"][0]
-    : params["groom_name]And[bride_name]"];
+  const wedding_id = getParamString(params.wedding_id);
+  const encodedGuestName = getParamString(params.guest_name);
+  const groomBrideString = getParamString(params["groom_name]And[bride_name]"]);
 
   const [groom_name, bride_name] = groomBrideString
     ? groomBrideString.split("And").map(decodeURIComponent)
