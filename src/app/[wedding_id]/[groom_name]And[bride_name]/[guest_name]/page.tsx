@@ -8,6 +8,8 @@ import Card from "@/components/Card/Welcome";
 import Loading from "@/components/Loading";
 import WeddingCard from "@/components/WeddingCard";
 import ErrorMessage from "@/components/ErrorMessage";
+import { getAllUserImages, type UserImage } from "@/actions/UploadImages";
+
 
 const GuestPage = () => {
   const params = useParams();
@@ -31,6 +33,22 @@ const GuestPage = () => {
   const [guest, setGuest] = useState(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null); 
+  const [images, setImages] = useState<UserImage[]>([]);
+
+  useEffect(() => {
+    const getAllImages = async () => {
+      try {
+        const response = await getAllUserImages(weddingIdNumber);
+        if (response.success) {
+          setImages(response.images);
+        }
+      } catch (err) {
+        console.error('Error fetching images:', err);
+      }
+    };
+  
+    getAllImages();
+  }, [weddingIdNumber]);
 
   useEffect(() => {
     const handleSubmit = async () => {
@@ -95,7 +113,7 @@ const GuestPage = () => {
       {error ? (
         <ErrorMessage message={error} />
       ) : ready ? (
-        <WeddingCard weddingDetails={weddingDetails} guest={guest} />
+        <WeddingCard weddingDetails={weddingDetails} guest={guest}  images={images}/>
       ) : wedding && weddingDetails ? (
         <Card
           wedding={wedding}

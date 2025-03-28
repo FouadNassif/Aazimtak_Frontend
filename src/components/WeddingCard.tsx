@@ -10,6 +10,7 @@ import ImagesLayout3 from "@/components/Card/ImagesLayout3";
 import ImagesLayout4 from "@/components/Card/ImagesLayout4";
 import RSVPForm from "./Card/RSVPForm";
 import PoweredBy from "@/components/PowerBy";
+import { UserImage } from "@/actions/UploadImages";
 
 interface WeddingDetailsProps {
   weddingDetails: {
@@ -30,20 +31,44 @@ interface WeddingDetailsProps {
     number_of_people: number;
     number_of_kids: number;
   };
+  images: UserImage[];
 }
 
 export default function WeddingCard({
   weddingDetails,
   guest,
+  images
 }: WeddingDetailsProps) {
+  // Group images by layout
+  const groupedImages = images.reduce((acc, img) => {
+    if (!acc[img.layout]) {
+      acc[img.layout] = [];
+    }
+    // Remove double slashes in path if they exist
+    const cleanPath = img.path.replace(/\/+/g, '/');
+    acc[img.layout][img.position - 1] = `${process.env.NEXT_PUBLIC_URL}${cleanPath}`;
+    return acc;
+  }, {} as Record<number, string[]>);
+
+  // Helper function to get images for a specific layout
+  const getLayoutImages = (layout: number, count: number) => {
+    const layoutImages = groupedImages[layout] || [];
+    // Fill missing images with default placeholder
+    return Array.from({ length: count }, (_, i) => 
+      layoutImages[i] || '/assets/img/placeholder.jpg'
+    );
+  };
+
+  console.log('Grouped Images:', groupedImages);
+
   return (
     <>
       <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(5, 5)[0]}
+        image2={getLayoutImages(5, 5)[1]}
+        image3={getLayoutImages(5, 5)[2]}
+        image4={getLayoutImages(5, 5)[3]}
+        image5={getLayoutImages(5, 5)[4]}
       />
       <Box
         display={"flex"}
@@ -60,11 +85,11 @@ export default function WeddingCard({
         <Countdown targetDate={weddingDetails.wedding_date} />
       </Box>
       <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(6, 5)[0]}
+        image2={getLayoutImages(6, 5)[1]}
+        image3={getLayoutImages(6, 5)[2]}
+        image4={getLayoutImages(6, 5)[3]}
+        image5={getLayoutImages(6, 5)[4]}
       />
       <WeddingDetails
         weddingDetail={{
@@ -76,8 +101,8 @@ export default function WeddingCard({
         }}
       />
       <ImagesLayout2
-        image1="/assets/img/Welcome.jpg"
-        image2="/assets/img/Support.jpg"
+        image1={getLayoutImages(2, 2)[0]}
+        image2={getLayoutImages(2, 2)[1]}
       />
 
       <WeddingDetails
@@ -90,9 +115,9 @@ export default function WeddingCard({
         }}
       />
       <ImagesLayout3
-        image1="/assets/img/Support.jpg"
-        image2="/assets/img/Welcome2.jpg"
-        image3="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(3, 3)[0]}
+        image2={getLayoutImages(3, 3)[1]}
+        image3={getLayoutImages(3, 3)[2]}
       />
       <GiftRegistry
         weddingDetail={{
@@ -101,10 +126,10 @@ export default function WeddingCard({
         }}
       />
       <ImagesLayout4
-        image1="/assets/img/Welcome.jpg"
-        image2="/assets/img/Support.jpg"
-        image3="/assets/img/Welcome2.jpg"
-        image4="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(4, 4)[0]}
+        image2={getLayoutImages(4, 4)[1]}
+        image3={getLayoutImages(4, 4)[2]}
+        image4={getLayoutImages(4, 4)[3]}
       />
       <RSVPForm
         guest={{
