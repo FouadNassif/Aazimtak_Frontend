@@ -34,30 +34,32 @@ interface WeddingDetailsProps {
   images: UserImage[];
 }
 
-const defaultImages = {
-  layout2: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg"],
-  layout3: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg", "/assets/img/Welcome3.jpg"],
-  layout4: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg", "/assets/img/Welcome3.jpg", "/assets/img/Support.jpg"],
-  layout5: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg", "/assets/img/Welcome3.jpg", "/assets/img/Support.jpg", "/assets/img/img1.jpg"]
-};
-
 export default function WeddingCard({
   weddingDetails,
   guest,
   images
 }: WeddingDetailsProps) {
-  const getLayoutImages = (layout: number, count: number): string[] => {
-    if (!images || images.length === 0) {
-      return defaultImages[`layout${count}` as keyof typeof defaultImages] || [];
+  // Group images by layout
+  const groupedImages = images.reduce((acc, img) => {
+    if (!acc[img.layout]) {
+      acc[img.layout] = [];
     }
+    // Remove double slashes in path if they exist
+    const cleanPath = img.path.replace(/\/+/g, '/');
+    acc[img.layout][img.position - 1] = `${process.env.NEXT_PUBLIC_URL}${cleanPath}`;
+    return acc;
+  }, {} as Record<number, string[]>);
 
-    const layoutImages = images.filter(img => img.layout === layout);
-    if (layoutImages.length === 0) {
-      return defaultImages[`layout${count}` as keyof typeof defaultImages] || [];
-    }
-
-    return layoutImages.slice(0, count).map(img => img.path);
+  // Helper function to get images for a specific layout
+  const getLayoutImages = (layout: number, count: number) => {
+    const layoutImages = groupedImages[layout] || [];
+    // Fill missing images with default placeholder
+    return Array.from({ length: count }, (_, i) => 
+      layoutImages[i] || '/assets/img/placeholder.jpg'
+    );
   };
+
+  console.log('Grouped Images:', groupedImages);
 
   return (
     <>
