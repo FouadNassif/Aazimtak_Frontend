@@ -1,74 +1,119 @@
 "use server";
 
 import { LaravelInstance } from "./axios";
-
 interface UserImageResponse {
   message: string;
-  paths: string[]; // Array of image URLs (strings)
+  image?: {
+    path: string;
+    layout: number;
+    position: number;
+  };
+  errors?: Record<string, string[]>;
 }
 
-export async function uploadImages({
-  userId,
-  images,
-}: {
-  userId: number;
-  images: File[]; // Array of image files
-}): Promise<string[]> {
+export interface UserImage {
+  id: number;
+  path: string;
+  layout: number;
+  position: number;
+}
+
+interface GetImagesResponse {
+  success: boolean;
+  images: UserImage[];
+  message?: string;
+}
+
+interface AxiosErrorResponse {
+  response?: {
+    status: number;
+    data: {
+      message?: string;
+      errors?: Record<string, string[]>;
+    };
+  };
+}
+
+export async function uploadSingleImage(
+  userId: number, 
+  file: File, 
+  layout: number, 
+  position: number
+): Promise<UploadResponse> {
   try {
     const formData = new FormData();
+    formData.append('image', file);
+    formData.append('userId', userId.toString());
+    formData.append('layout', layout.toString());
+    formData.append('position', position.toString());
 
-    // Append images to the FormData object
-    images.forEach((image) => {
-      formData.append("images[]", image); // 'images[]' is used to pass an array of files
-    });
-
-    // Append userId to the FormData
-    formData.append("userId", String(userId));
-
-    // Send the request
     const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post(
-      "/dashboard/wedding/upload-images", // Ensure this is your correct API route
-      formData, // Pass the FormData object directly, not as part of a JSON object
+    
+    const response = await axiosClient.post<UploadResponse>(
+      '/dashboard/wedding/image/upload',
+      formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data", // Ensure correct content type for file uploads
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
         },
       }
     );
 
-    if (response.status !== 200) {
-      throw new Error("Failed to upload images: " + response.status);
+    return response.data;
+  } catch (error: unknown) {
+    console.error('Upload error:', error);
+    
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as AxiosErrorResponse;
+      // Handle validation errors
+      if (axiosError.response?.status === 422) {
+        return {
+          success: false,
+          message: 'Validation failed',
+          errors: axiosError.response.data.errors
+        };
+      }
+
+      // Handle other errors
+      return {
+        success: false,
+        message: axiosError.response?.data?.message || 'Failed to upload image. Please try again.'
+      };
     }
 
-    return response.data; // Return the response data containing image paths
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error uploading images:", errorMessage);
-    throw new Error(errorMessage);
+    return {
+      success: false,
+      message: 'Failed to upload image. Please try again.'
+    };
   }
 }
 
-export async function getAllUserImages({
-  userId,
-}: {
-  userId: number;
-}): Promise<UserImageResponse> {
+export async function getAllUserImages(userId: number): Promise<GetImagesResponse> {
   try {
     const axiosClient = await LaravelInstance();
-    const response = await axiosClient.post(
-      "/dashboard/wedding/getAllUserImages",
-      { userId }
-    );
-
-    if (response.status !== 200) {
-      throw new Error("Failed to upload images: " + response.status);
+    const response = await axiosClient.get<GetImagesResponse>(`/dashboard/wedding/images/${userId}`);
+    
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to fetch images');
     }
-    return response.data; // Return the response data containing image paths
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("Error uploading images:", errorMessage);
-    throw new Error(errorMessage);
+
+    return {
+      success: true,
+      images: response.data.images.map(img => ({
+        id: img.id,
+        path: img.path,
+        layout: img.layout,
+        position: img.position
+      }))
+    };
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    return {
+      success: false,
+      images: [],
+      message: error instanceof Error ? error.message : 'Failed to fetch images'
+    };
   }
 }
 

@@ -13,6 +13,16 @@ import {
   ListItem,
   ListItemText,
   Avatar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Chip,
+  LinearProgress,
+  Divider,
 } from "@mui/material";
 import {
   TrendingUp,
@@ -22,6 +32,10 @@ import {
   ArrowUpward,
   ArrowDownward,
   Add as AddIcon,
+  LocationOn,
+  Storage,
+  Person,
+  PhotoCamera,
 } from "@mui/icons-material";
 import { getAdminDashboard } from "@/actions/adminDashboard";
 import Loading from "@/components/Loading";
@@ -29,25 +43,50 @@ import { useRouter } from "next/navigation";
 
 const COLORS = ["#2196f3", "#1976d2", "#0d47a1"];
 
-interface Activity {
-  date: string;
-  description: string;
-}
-
 interface DashboardData {
-  totalWeddings: number;
-  recentlyAddedWeddings: number;
-  recentActivities: Activity[];
   status: boolean;
+  weddingStats: {
+    totalWeddings: number;
+    upcomingWeddings: number;
+    totalGuests: number;
+    monthlyWeddings: number;
+  };
+  guestResponses: {
+    attending: number;
+    notAttending: number;
+    pending: number;
+  };
+  upcomingWeddings: Array<{
+    id: number;
+    bride_name: string;
+    groom_name: string;
+    wedding_date: string;
+    ceremony_city: string;
+    guest_count: number;
+  }>;
+  recentGuestUpdates: Array<{
+    id: number;
+    name: string;
+    attending_status: string;
+    number_of_people: number;
+    number_of_kids: number;
+    status_changed: string;
+    wedding_name: string;
+  }>;
+  cityDistribution: Array<{
+    ceremony_city: string;
+    count: number;
+  }>;
+  systemStats: {
+    activeSessions: number;
+    totalUsers: number;
+    totalImages: number;
+    storageUsed: number;
+  };
 }
 
 export default function Dashboard() {
-  const [data, setData] = useState<DashboardData>({
-    totalWeddings: 0,
-    recentlyAddedWeddings: 0,
-    recentActivities: [],
-    status: false,
-  });
+  const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -55,7 +94,6 @@ export default function Dashboard() {
     const loadDashboardData = async () => {
       try {
         const response = await getAdminDashboard();
-        
         if (response && response.status) {
           setData(response);
         }
@@ -74,33 +112,30 @@ export default function Dashboard() {
   const metrics = [
     {
       label: "Total Weddings",
-      value: data.totalWeddings || 0,
+      value: data?.weddingStats.totalWeddings || 0,
       icon: <Celebration />,
-      trend: "+12%",
+      trend: `+${((data?.weddingStats.monthlyWeddings || 0) / (data?.weddingStats.totalWeddings || 1) * 100).toFixed(0)}%`,
       positive: true,
     },
     {
-      label: "Recent Weddings",
-      value: data.recentlyAddedWeddings || 0,
+      label: "Upcoming Weddings",
+      value: data?.weddingStats.upcomingWeddings || 0,
       icon: <DateRange />,
-      trend: `+${(
-        ((data.recentlyAddedWeddings || 0) / (data.totalWeddings || 1)) *
-        100
-      ).toFixed(0)}%`,
+      trend: "This Month",
       positive: true,
     },
     {
       label: "Total Guests",
-      value: "0", // You can add this to your API response
+      value: data?.weddingStats.totalGuests || 0,
       icon: <People />,
-      trend: "+5%",
+      trend: `+${((data?.guestResponses.attending || 0) / (data?.weddingStats.totalGuests || 1) * 100).toFixed(0)}%`,
       positive: true,
     },
     {
-      label: "Monthly Growth",
-      value: data.recentlyAddedWeddings || 0,
+      label: "Monthly Weddings",
+      value: data?.weddingStats.monthlyWeddings || 0,
       icon: <TrendingUp />,
-      trend: "+8%",
+      trend: "This Month",
       positive: true,
     },
   ];
@@ -122,7 +157,7 @@ export default function Dashboard() {
               Dashboard Overview
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Manage your weddings and monitor activities
+              Comprehensive overview of your wedding platform
             </Typography>
           </Box>
           <Button
@@ -147,63 +182,60 @@ export default function Dashboard() {
           ))}
         </Grid>
 
-        {/* Recent Activities */}
+        {/* Main Content Grid */}
         <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Card elevation={0} sx={{ borderRadius: 3 }}>
+          {/* Upcoming Weddings */}
+          <Grid item xs={12} md={6}>
+            <Card elevation={0} sx={{ borderRadius: 3, height: "100%" }}>
               <CardContent>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Recent Activities
+                  Upcoming Weddings
                 </Typography>
-                <List>
-                  {data.recentActivities && data.recentActivities.length > 0 ? (
-                    data.recentActivities.map((activity, index) => (
-                      <ListItem
-                        key={index}
-                        divider={index !== data.recentActivities.length - 1}
-                      >
-                        <ListItemText
-                          primary={activity.description}
-                          secondary={new Date(
-                            activity.date
-                          ).toLocaleDateString()}
-                        />
-                      </ListItem>
-                    ))
-                  ) : (
-                    <ListItem>
-                      <ListItemText
-                        primary="No recent activities"
-                        secondary="New activities will appear here"
-                      />
-                    </ListItem>
-                  )}
-                </List>
+                <TableContainer>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Couple</TableCell>
+                        <TableCell>Date</TableCell>
+                        <TableCell>Location</TableCell>
+                        <TableCell>Guests</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data?.upcomingWeddings.map((wedding) => (
+                        <TableRow key={wedding.id}>
+                          <TableCell>
+                            {wedding.bride_name} & {wedding.groom_name}
+                          </TableCell>
+                          <TableCell>
+                            {new Date(wedding.wedding_date).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>{wedding.ceremony_city}</TableCell>
+                          <TableCell>{wedding.guest_count}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </CardContent>
             </Card>
           </Grid>
 
-          {/* Guest Statistics */}
-          <Grid item xs={12} md={4}>
-            <Card elevation={0} sx={{ borderRadius: 3 }}>
+          {/* Guest Response Statistics */}
+          <Grid item xs={12} md={6}>
+            <Card elevation={0} sx={{ borderRadius: 3, height: "100%" }}>
               <CardContent>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Guest Status
+                  Guest Response Statistics
                 </Typography>
                 <Box sx={{ mt: 2 }}>
                   {[
-                    { label: "Attending", value: 0, color: "#4caf50" },
-                    { label: "Not Attending", value: 0, color: "#f44336" },
-                    { label: "Pending", value: 0, color: "#ff9800" },
+                    { label: "Attending", value: data?.guestResponses.attending || 0, color: "#4caf50" },
+                    { label: "Not Attending", value: data?.guestResponses.notAttending || 0, color: "#f44336" },
+                    { label: "Pending", value: data?.guestResponses.pending || 0, color: "#ff9800" },
                   ].map((stat) => (
                     <Box key={stat.label} sx={{ mb: 2 }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          mb: 1,
-                        }}
-                      >
+                      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
                         <Typography variant="body2" color="text.secondary">
                           {stat.label}
                         </Typography>
@@ -211,25 +243,135 @@ export default function Dashboard() {
                           {stat.value}
                         </Typography>
                       </Box>
-                      <Box
+                      <LinearProgress
+                        variant="determinate"
+                        value={(stat.value / (data?.weddingStats.totalGuests || 1)) * 100}
                         sx={{
-                          height: 4,
+                          height: 8,
+                          borderRadius: 4,
                           bgcolor: "#eee",
-                          borderRadius: 2,
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: `${(stat.value / 1) * 100}%`,
-                            height: "100%",
+                          "& .MuiLinearProgress-bar": {
                             bgcolor: stat.color,
-                          }}
-                        />
-                      </Box>
+                          },
+                        }}
+                      />
                     </Box>
                   ))}
                 </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Recent Guest Updates */}
+          <Grid item xs={12} md={8}>
+            <Card elevation={0} sx={{ borderRadius: 3 }}>
+              <CardContent>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  Recent Guest Updates
+                </Typography>
+                <TableContainer>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Guest</TableCell>
+                        <TableCell>Wedding</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>People</TableCell>
+                        <TableCell>Date</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data?.recentGuestUpdates.map((guest) => (
+                        <TableRow key={guest.id}>
+                          <TableCell>{guest.name}</TableCell>
+                          <TableCell>{guest.wedding_name}</TableCell>
+                          <TableCell>
+                            <Chip
+                              label={guest.attending_status}
+                              color={
+                                guest.attending_status === "yes"
+                                  ? "success"
+                                  : guest.attending_status === "no"
+                                  ? "error"
+                                  : "warning"
+                              }
+                              size="small"
+                            />
+                          </TableCell>
+                          <TableCell>{guest.number_of_people}</TableCell>
+                          <TableCell>
+                            {new Date(guest.status_changed).toLocaleDateString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* System Statistics */}
+          <Grid item xs={12} md={4}>
+            <Card elevation={0} sx={{ borderRadius: 3 }}>
+              <CardContent>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  System Statistics
+                </Typography>
+                <List>
+                  <ListItem>
+                    <ListItemText
+                      primary="Active Sessions"
+                      secondary={data?.systemStats.activeSessions}
+                      secondaryTypographyProps={{ color: "primary" }}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Total Users"
+                      secondary={data?.systemStats.totalUsers}
+                      secondaryTypographyProps={{ color: "primary" }}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Total Images"
+                      secondary={data?.systemStats.totalImages}
+                      secondaryTypographyProps={{ color: "primary" }}
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      primary="Storage Used"
+                      secondary={`${(data?.systemStats.storageUsed / 1024 / 1024).toFixed(2)} MB`}
+                      secondaryTypographyProps={{ color: "primary" }}
+                    />
+                  </ListItem>
+                </List>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* City Distribution */}
+          <Grid item xs={12}>
+            <Card elevation={0} sx={{ borderRadius: 3 }}>
+              <CardContent>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  Wedding Locations
+                </Typography>
+                <Grid container spacing={2}>
+                  {data?.cityDistribution.map((city) => (
+                    <Grid item xs={12} sm={6} md={4} key={city.ceremony_city}>
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                        <LocationOn sx={{ color: "primary.main", mr: 1 }} />
+                        <Typography variant="body1">{city.ceremony_city}</Typography>
+                      </Box>
+                      <Typography variant="body2" color="text.secondary">
+                        {city.count} weddings
+                      </Typography>
+                    </Grid>
+                  ))}
+                </Grid>
               </CardContent>
             </Card>
           </Grid>

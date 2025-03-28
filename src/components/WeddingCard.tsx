@@ -11,6 +11,7 @@ import ImagesLayout3 from "@/components/Card/ImagesLayout3";
 import ImagesLayout4 from "@/components/Card/ImagesLayout4";
 import RSVPForm from "./Card/RSVPForm";
 import PoweredBy from "@/components/PowerBy";
+import { UserImage } from "@/actions/UploadImages";
 
 interface WeddingDetailsProps {
   weddingDetails: {
@@ -31,6 +32,7 @@ interface WeddingDetailsProps {
     number_of_people: number;
     number_of_kids: number;
   };
+  images: UserImage[];
 }
 
 const imageUrls = [
@@ -44,94 +46,16 @@ const imageUrls = [
 export default function WeddingCard({
   weddingDetails,
   guest,
+  images
 }: WeddingDetailsProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadedImages, setLoadedImages] = useState(0);
-
-  useEffect(() => {
-    const preloadImages = async () => {
-      const imagePromises = imageUrls.map((url) => {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.src = url;
-          img.onload = () => {
-            setLoadedImages((prev) => prev + 1);
-            resolve(url);
-          };
-          img.onerror = reject;
-        });
-      });
-
-      try {
-        await Promise.all(imagePromises);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error preloading images:", error);
-        setIsLoading(false);
-      }
-    };
-
-    preloadImages();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          background: "linear-gradient(135deg, #f3e5ab, #f8f5f2)",
-        }}
-      >
-        <Box
-          sx={{
-            textAlign: "center",
-            background: "rgba(255, 255, 255, 0.9)",
-            padding: "40px",
-            borderRadius: "20px",
-            boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <CircularProgress
-            size={60}
-            sx={{
-              color: "#d4a373",
-              marginBottom: "20px",
-            }}
-          />
-          <Box
-            sx={{
-              color: "#2c3e50",
-              fontSize: "18px",
-              fontFamily: "'Roboto', sans-serif",
-            }}
-          >
-            Loading your invitation...
-          </Box>
-          <Box
-            sx={{
-              color: "#666",
-              fontSize: "14px",
-              marginTop: "10px",
-            }}
-          >
-            {Math.round((loadedImages / imageUrls.length) * 100)}% complete
-          </Box>
-        </Box>
-      </Box>
-    );
-  }
-
   return (
     <>
       <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(5, 5)[0]}
+        image2={getLayoutImages(5, 5)[1]}
+        image3={getLayoutImages(5, 5)[2]}
+        image4={getLayoutImages(5, 5)[3]}
+        image5={getLayoutImages(5, 5)[4]}
       />
       <Box
         display={"flex"}
@@ -148,11 +72,11 @@ export default function WeddingCard({
         <Countdown targetDate={weddingDetails.wedding_date} />
       </Box>
       <ImagesLayout5
-        image1="/assets/img/img1.jpg"
-        image2="/assets/img/Welcome.jpg"
-        image3="/assets/img/Support.jpg"
-        image4="/assets/img/Welcome2.jpg"
-        image5="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(6, 5)[0]}
+        image2={getLayoutImages(6, 5)[1]}
+        image3={getLayoutImages(6, 5)[2]}
+        image4={getLayoutImages(6, 5)[3]}
+        image5={getLayoutImages(6, 5)[4]}
       />
       <WeddingDetails
         weddingDetail={{
@@ -164,8 +88,8 @@ export default function WeddingCard({
         }}
       />
       <ImagesLayout2
-        image1="/assets/img/Welcome.jpg"
-        image2="/assets/img/Support.jpg"
+        image1={getLayoutImages(2, 2)[0]}
+        image2={getLayoutImages(2, 2)[1]}
       />
 
       <WeddingDetails
@@ -178,9 +102,9 @@ export default function WeddingCard({
         }}
       />
       <ImagesLayout3
-        image1="/assets/img/Support.jpg"
-        image2="/assets/img/Welcome2.jpg"
-        image3="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(3, 3)[0]}
+        image2={getLayoutImages(3, 3)[1]}
+        image3={getLayoutImages(3, 3)[2]}
       />
       <GiftRegistry
         weddingDetail={{
@@ -189,10 +113,10 @@ export default function WeddingCard({
         }}
       />
       <ImagesLayout4
-        image1="/assets/img/Welcome.jpg"
-        image2="/assets/img/Support.jpg"
-        image3="/assets/img/Welcome2.jpg"
-        image4="/assets/img/Welcome3.jpg"
+        image1={getLayoutImages(4, 4)[0]}
+        image2={getLayoutImages(4, 4)[1]}
+        image3={getLayoutImages(4, 4)[2]}
+        image4={getLayoutImages(4, 4)[3]}
       />
       <RSVPForm
         guest={{

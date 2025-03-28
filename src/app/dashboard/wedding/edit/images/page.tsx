@@ -1,229 +1,130 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllUserImages, uploadImages } from "@/actions/UploadImages";
+import { getAllUserImages } from "@/actions/UploadImages";
+import ImagesLayout2 from "@/components/Card/ImagesLayout2";
+import ImagesLayout3 from "@/components/Card/ImagesLayout3";
+import ImagesLayout4 from "@/components/Card/ImagesLayout4";
+import ImagesLayout5 from "@/components/Card/ImagesLayout5";
 import { useAuth } from "@/context/AuthProvider";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import Image from "next/image";
+import WeddingCard from "@/components/WeddingCard";
+import { getWeddingData } from "@/actions/clientsDashboard";
 
-interface LayoutImage {
-  id: number;
-  path: string;
-  layout: number;
-  position: number;
-}
+const guest = {
+  name: "John Doe",
+  number_of_people: 2,
+  number_of_kids: 1,
+};
 
-interface LayoutConfig {
-  id: number;
-  name: string;
-  requiredImages: number;
-  component: string;
-}
-
-const layouts: LayoutConfig[] = [
-  { id: 2, name: "Two Images", requiredImages: 2, component: "ImagesLayout2" },
-  { id: 3, name: "Three Images", requiredImages: 3, component: "ImagesLayout3" },
-  { id: 4, name: "Four Images", requiredImages: 4, component: "ImagesLayout4" },
-  { id: 5, name: "Five Images", requiredImages: 5, component: "ImagesLayout5" },
-];
-
+const WeddingDetails =  {
+    wedding_date: "2026-11-23",
+    ceremony_time: "11:00",
+    ceremony_place: "Somewhere",
+    ceremony_city: "Unknow",
+    ceremony_maps: "wdwdwd",
+    party_time: "16:00",
+    party_place: "Somewhere",
+    party_city: "Unknow",
+    party_maps: "wdwdw",
+    gift_type: "Bank",
+    gift_details: "Bank-12-23-ADC",
+  };
 export default function EditImages() {
   const { user } = useAuth();
-  const [images, setImages] = useState<LayoutImage[]>([]);
-  const [selectedLayout, setSelectedLayout] = useState<LayoutConfig | null>(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  const [userImages, setUserImages] = useState<
+    { layout: number; path: string }[]
+  >([]);
 
   useEffect(() => {
-    if (user?.id) {
-      fetchImages();
-    }
+    const fetchImages = async () => {
+      if (!user?.id) return;
+      try {
+        const images = await getAllUserImages({ userId: user.id });
+        setUserImages(images);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchImages();
   }, [user]);
 
-  const fetchImages = async () => {
-    try {
-      const response = await getAllUserImages({ userId: user!.id });
-      const formattedImages: LayoutImage[] = [];
-      
-      // Convert the response paths array to our LayoutImage format
-      response.paths.forEach((path, index) => {
-        formattedImages.push({
-          id: Math.random(),
-          path: path,
-          layout: 2, // Default layout, you might want to adjust this
-          position: index + 1,
-        });
-      });
-      
-      setImages(formattedImages);
-    } catch (error) {
-      console.error("Error fetching images:", error);
+  const groupedImages: { [key: number]: string[] } = {};
+
+  Object.entries(userImages).forEach(([layout, images]) => {
+    const layoutKey = Number(layout);
+    if (!groupedImages[layoutKey]) {
+      groupedImages[layoutKey] = [];
     }
-  };
 
-  const handleLayoutSelect = (layout: LayoutConfig) => {
-    setSelectedLayout(layout);
-    setOpenDialog(true);
-  };
-
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile || !user?.id) return;
-
-    setLoading(true);
-    try {
-      const response = await uploadImages({
-        userId: user.id,
-        images: [selectedFile],
-      });
-
-      // Add new image to state
-      const newImage: LayoutImage = {
-        id: Math.random(),
-        path: response[0],
-        layout: selectedLayout?.id || 2,
-        position: images.filter(img => img.layout === (selectedLayout?.id || 2)).length + 1,
-      };
-
-      setImages(prev => [...prev, newImage]);
-      setOpenDialog(false);
-      setSelectedFile(null);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (image: LayoutImage) => {
-    // TODO: Implement delete functionality
-    setImages(prev => prev.filter(img => img.id !== image.id));
-  };
+    Object.values(images).forEach((path) => {
+      groupedImages[layoutKey].push(process.env.NEXT_PUBLIC_API_URL + path);
+    });
+  });
 
   return (
     <DashboardClientLayout>
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Wedding Images
-        </Typography>
-
-        <Grid container spacing={3}>
-          {layouts.map((layout) => (
-            <Grid item xs={12} md={6} key={layout.id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {layout.name}
-                  </Typography>
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
-                    {images
-                      .filter((img) => img.layout === layout.id)
-                      .map((image) => (
-                        <Box
-                          key={image.id}
-                          sx={{
-                            position: "relative",
-                            width: 150,
-                            height: 150,
-                          }}
-                        >
-                          <Image
-                            src={image.path}
-                            alt={`Layout ${layout.id} Image ${image.position}`}
-                            fill
-                            style={{ objectFit: "cover" }}
-                          />
-                          <IconButton
-                            sx={{
-                              position: "absolute",
-                              top: 8,
-                              right: 8,
-                              bgcolor: "rgba(255,255,255,0.8)",
-                            }}
-                            onClick={() => handleDelete(image)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Box>
-                      ))}
-                  </Box>
-                  <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={() => handleLayoutSelect(layout)}
-                    disabled={
-                      images.filter((img) => img.layout === layout.id).length >=
-                      layout.requiredImages
-                    }
-                  >
-                    Add Image
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle>Add Image to {selectedLayout?.name}</DialogTitle>
-          <DialogContent>
-            <Box sx={{ mt: 2 }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageSelect}
-                style={{ display: "none" }}
-                id="image-upload"
-              />
-              <label htmlFor="image-upload">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  fullWidth
-                  sx={{ mb: 2 }}
-                >
-                  Select Image
-                </Button>
-                {selectedFile && (
-                  <Typography variant="body2" color="text.secondary">
-                    Selected: {selectedFile.name}
-                  </Typography>
-                )}
-              </label>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-            <Button
-              onClick={handleUpload}
-              variant="contained"
-              disabled={!selectedFile || loading}
-            >
-              {loading ? "Uploading..." : "Upload"}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+      <h1 className="text-xl font-bold">Edit Images</h1>
+      <div className="space-y-4">
+        {Object.entries(groupedImages).map(([layout, images]) => {
+          switch (parseInt(layout)) {
+            case 2:
+              return images.length >= 2 ? (
+                <ImagesLayout2
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                />
+              ) : null;
+            case 3:
+              return images.length >= 3 ? (
+                <ImagesLayout3
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                />
+              ) : null;
+            case 4:
+              return images.length >= 4 ? (
+                <ImagesLayout4
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                  image4={images[3]}
+                />
+              ) : null;
+            case 5:
+              return images.length >= 5 ? (
+                <ImagesLayout5
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                  image4={images[3]}
+                  image5={images[4]}
+                />
+              ) : null;
+            case 6:
+              return images.length >= 5 ? (
+                <ImagesLayout5
+                  key={layout}
+                  image1={images[0]}
+                  image2={images[1]}
+                  image3={images[2]}
+                  image4={images[3]}
+                  image5={images[4]}
+                />
+              ) : null;
+            default:
+              return null;
+          }
+        })}
+      </div>
+      <WeddingCard weddingDetails={WeddingDetails} guest={guest} />
     </DashboardClientLayout>
   );
 }
