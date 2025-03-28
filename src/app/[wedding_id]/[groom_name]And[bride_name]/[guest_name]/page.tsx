@@ -1,6 +1,5 @@
-export const dynamic = 'force-dynamic';
-
 "use client";
+export const dynamic = 'force-dynamic';
 
 import { getWeddingCardDetails } from "@/actions/wedding";
 import { Box } from "@mui/material";
@@ -10,9 +9,13 @@ import Card from "@/components/Card/Welcome";
 import Loading from "@/components/Loading";
 import WeddingCard from "@/components/WeddingCard";
 import ErrorMessage from "@/components/ErrorMessage";
-import { getAllUserImages, type UserImage } from "@/actions/UploadImages";
+import { getAllUserImages, UserImage } from "@/actions/UploadImages";
 
-// Defining WeddingDetails type interface
+interface Wedding {
+  groom_name: string;
+  bride_name: string;
+}
+
 interface WeddingDetails {
   wedding_date: string;
   ceremony_time: string;
@@ -37,26 +40,22 @@ const GuestPage = () => {
   const params = useParams();
   const router = useRouter();
 
-  // Helper function to safely extract string values
-  const getParamString = (param: string | string[] | undefined): string | null => {
-    return Array.isArray(param) ? param[0] : param ?? null;
-  };
+  const { wedding_id, guest_name: encodedGuestName } = params;
 
-  const wedding_id = getParamString(params.wedding_id);
-  const encodedGuestName = getParamString(params.guest_name);
-  const groomBrideString = getParamString(params["groom_name]And[bride_name]"]);
-
-  const [groom_name, bride_name] = groomBrideString
-    ? groomBrideString.split("And").map(decodeURIComponent)
+  const [groom_name, bride_name] = params["groom_name]And[bride_name"]
+    ? String(params["groom_name]And[bride_name"])
+        .split("And")
+        .map((name) => decodeURIComponent(name))
     : [null, null];
 
-  const guest_name = encodedGuestName ? decodeURIComponent(encodedGuestName) : null;
+  const guest_name = encodedGuestName
+    ? decodeURIComponent(String(encodedGuestName))
+    : null;
   const weddingIdNumber = wedding_id ? Number(wedding_id) : NaN;
 
-  // Define state with proper types
-  const [wedding, setWedding] = useState<any>(null);
-  const [weddingDetails, setWeddingDetails] = useState<WeddingDetails | null>(null); // Using WeddingDetails type
-  const [guest, setGuest] = useState<Guest | null>(null); // Using Guest type
+  const [wedding, setWedding] = useState<Wedding | null>(null);
+  const [weddingDetails, setWeddingDetails] = useState<WeddingDetails | null>(null);
+  const [guest, setGuest] = useState<Guest | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<UserImage[]>([]);
@@ -69,10 +68,10 @@ const GuestPage = () => {
           setImages(response.images);
         }
       } catch (err) {
-        console.error("Error fetching images:", err);
+        console.error('Error fetching images:', err);
       }
     };
-
+  
     getAllImages();
   }, [weddingIdNumber]);
 
@@ -98,11 +97,11 @@ const GuestPage = () => {
 
         if (result) {
           setWedding(result.wedding);
-          setWeddingDetails(result.wedding_detail); // Ensure this is set properly
+          setWeddingDetails(result.wedding_detail);
           setGuest(result.guest);
         }
       } catch (err) {
-        console.log(err);
+        console.error('Error fetching wedding details:', err);
         setError("An error occurred while fetching wedding details");
       }
     };
@@ -117,7 +116,7 @@ const GuestPage = () => {
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        router.push("/");
+        router.push("/"); 
       }, 3000);
     }
   }, [error, router]);
@@ -136,10 +135,18 @@ const GuestPage = () => {
     >
       {error ? (
         <ErrorMessage message={error} />
-      ) : ready ? (
-        <WeddingCard weddingDetails={weddingDetails!} guest={guest!} images={images} /> // Ensure non-null values
+      ) : ready && weddingDetails && guest ? (
+        <WeddingCard 
+          weddingDetails={weddingDetails} 
+          guest={guest} 
+          images={images}
+        />
       ) : wedding && weddingDetails ? (
-        <Card wedding={wedding} weddingDetails={weddingDetails} setReady={setReady} />
+        <Card
+          wedding={wedding}
+          weddingDetails={weddingDetails}
+          setReady={setReady}
+        />
       ) : (
         <Loading />
       )}
