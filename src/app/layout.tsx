@@ -1,5 +1,7 @@
+export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { Inter, Source_Code_Pro } from "next/font/google";
+
 import "./globals.css";
 import "./main.css";
 import AuthProvider from "@/context/AuthProvider";
