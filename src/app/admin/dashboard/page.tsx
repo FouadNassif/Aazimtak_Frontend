@@ -1,7 +1,6 @@
-"use client";
-
 export const dynamic = 'force-dynamic';
 
+"use client";
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/layouts/AdminLayout";
@@ -25,7 +24,7 @@ import {
   Paper,
   Chip,
   LinearProgress,
-  Divider,
+  CircularProgress,
 } from "@mui/material";
 import {
   TrendingUp,
@@ -40,7 +39,7 @@ import {
   Person,
   PhotoCamera,
 } from "@mui/icons-material";
-import { getAdminDashboard } from "@/actions/adminDashboard";
+import { getAdminDashboard } from "@/actions/admin";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
 

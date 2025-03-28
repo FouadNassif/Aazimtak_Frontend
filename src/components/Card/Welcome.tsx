@@ -1,20 +1,7 @@
-"use client";
-
 import { Box, Button, Typography, Fade } from "@mui/material";
 import { motion } from "framer-motion";
 
-interface WelcomeProps {
-  wedding: {
-    groom_name: string;
-    bride_name: string;
-  };
-  weddingDetails: {
-    wedding_date: string;
-  };
-  setReady: (ready: boolean) => void;
-}
-
-export default function Card({ wedding, weddingDetails, setReady }: WelcomeProps) {
+export default function Card({ wedding, weddingDetails, setReady }) {
   return (
     <Box
       sx={{
