@@ -40,7 +40,7 @@ import {
   Person,
   PhotoCamera,
 } from "@mui/icons-material";
-import { getAdminDashboard } from "@/actions/admin";
+import { getAdminDashboard } from "@/actions/adminDashboard";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
 
