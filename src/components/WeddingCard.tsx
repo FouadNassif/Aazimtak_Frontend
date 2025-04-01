@@ -58,7 +58,7 @@ export default function WeddingCard({
       return defaultImages[`layout${count}` as keyof typeof defaultImages] || [];
     }
 
-    return layoutImages.slice(0, count).map(img => img.path);
+    return layoutImages.slice(0, count).map(img => process.env.NEXT_PUBLIC_URL + img.path);
   };
 
   return (

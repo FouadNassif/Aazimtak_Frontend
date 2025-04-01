@@ -101,14 +101,14 @@ export default function EditImages() {
 
   const handleUpload = async () => {
     if (!selectedImage.file || !user?.id) return;
-
+    const formData = new FormData();
+    formData.append('image', selectedImage.file);
+    formData.append('userId', user.id.toString());
+    formData.append('layout', selectedImage.layout.toString());
+    formData.append('position', selectedImage.position.toString());
     setIsUploading(true);
     try {
-      const response = await uploadSingleImage(
-        user.id, 
-        selectedImage.file, 
-        selectedImage.layout, 
-        selectedImage.position
+      const response = await uploadSingleImage(formData
       );
       
       setSnackbar({

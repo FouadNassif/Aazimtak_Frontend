@@ -37,20 +37,10 @@ interface AxiosErrorResponse {
 }
 
 export async function uploadSingleImage(
-  userId: number, 
-  file: File, 
-  layout: number, 
-  position: number
+  formData: FormData
 ): Promise<UploadResponse> {
   try {
-    const formData = new FormData();
-    formData.append('image', file);
-    formData.append('userId', userId.toString());
-    formData.append('layout', layout.toString());
-    formData.append('position', position.toString());
-
-    const axiosClient = await LaravelInstance();
-    
+    const axiosClient = await LaravelInstance();  
     const response = await axiosClient.post<UploadResponse>(
       '/dashboard/wedding/image/upload',
       formData,
@@ -62,9 +52,16 @@ export async function uploadSingleImage(
       }
     );
 
+    console.log('Upload response:', response.data);
     return response.data;
   } catch (error: unknown) {
-    console.error('Upload error:', error);
+    console.error('Upload error details:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      response: error && typeof error === 'object' && 'response' in error 
+        ? (error as any).response?.data 
+        : null
+    });
     
     if (error && typeof error === 'object' && 'response' in error) {
       const axiosError = error as AxiosErrorResponse;

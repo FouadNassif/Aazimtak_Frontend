@@ -14,9 +14,8 @@ const ImagesLayout2: React.FC<Props> = ({ image1, image2 }) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-      {/* First Image */}
       <div style={{ width: "100%", height: "16rem" }}>
-        <img src={image1} alt="Wedding Image" style={imageStyle} />
+        <img src={image1} alt={image1} style={imageStyle} />
       </div>
 
       {/* Second Image */}
