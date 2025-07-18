@@ -38,27 +38,48 @@ interface WeddingDetailsProps {
 
 const defaultImages = {
   layout2: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg"],
-  layout3: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg", "/assets/img/Welcome3.jpg"],
-  layout4: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg", "/assets/img/Welcome3.jpg", "/assets/img/Support.jpg"],
-  layout5: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg", "/assets/img/Welcome3.jpg", "/assets/img/Support.jpg", "/assets/img/img1.jpg"]
+  layout3: [
+    "/assets/img/Welcome.jpg",
+    "/assets/img/Welcome2.jpg",
+    "/assets/img/Welcome3.jpg",
+  ],
+  layout4: [
+    "/assets/img/Welcome.jpg",
+    "/assets/img/Welcome2.jpg",
+    "/assets/img/Welcome3.jpg",
+    "/assets/img/Support.jpg",
+  ],
+  layout5: [
+    "/assets/img/Welcome.jpg",
+    "/assets/img/Welcome2.jpg",
+    "/assets/img/Welcome3.jpg",
+    "/assets/img/Support.jpg",
+    "/assets/img/img1.jpg",
+  ],
 };
 
 export default function WeddingCard({
   weddingDetails,
   guest,
-  images
+  images,
 }: WeddingDetailsProps) {
   const getLayoutImages = (layout: number, count: number): string[] => {
     if (!images || images.length === 0) {
-      return defaultImages[`layout${count}` as keyof typeof defaultImages] || [];
+      return (
+        defaultImages[`layout${count}` as keyof typeof defaultImages] || []
+      );
     }
 
-    const layoutImages = images.filter(img => img.layout === layout);
+    const layoutImages = images.filter((img) => img.layout === layout);
     if (layoutImages.length === 0) {
-      return defaultImages[`layout${count}` as keyof typeof defaultImages] || [];
+      return (
+        defaultImages[`layout${count}` as keyof typeof defaultImages] || []
+      );
     }
 
-    return layoutImages.slice(0, count).map(img => process.env.NEXT_PUBLIC_URL + img.path);
+    return layoutImages
+      .slice(0, count)
+      .map((img) => process.env.NEXT_PUBLIC_BACKEND_URL + img.path);
   };
 
   return (

@@ -177,7 +177,7 @@ export default function Guests() {
   };
 
   const handleCopyLink = (weddingLink: string) => {
-    navigator.clipboard.writeText(weddingLink);
+    navigator.clipboard.writeText(process.env.NEXT_PUBLIC_URL + weddingLink);
     showSuccess("Wedding link copied to clipboard!");
   };
 

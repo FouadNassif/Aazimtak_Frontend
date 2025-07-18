@@ -66,6 +66,7 @@ const GuestPage = () => {
         const response = await getAllUserImages(weddingIdNumber);
         if (response.success) {
           setImages(response.images);
+          console.log(images);
         }
       } catch (err) {
         console.error('Error fetching images:', err);
