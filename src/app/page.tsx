@@ -1,7 +1,8 @@
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Sections from "@/components/Sections";
+import Hero from "@/components/HomeScreen/Hero";
+import Sections from "@/components/HomeScreen/Sections";
 import PoweredBy from "@/components/PowerBy";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Sections />
+      <Footer />
       <PoweredBy />
     </div>
   );

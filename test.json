@@ -1,0 +1,9 @@
+{
+    "welcomeScreen": {
+        "palette": 1,
+        "font": 2
+    },
+    "weddingCard":{
+        "font": 2
+    }
+}

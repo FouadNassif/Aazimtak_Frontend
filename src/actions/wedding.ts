@@ -54,3 +54,45 @@ export async function setAttendance({
     message,
   });
 }
+
+export async function getWeddingPreferences({
+  user_id,
+}: {
+  user_id: number;
+}): Promise<any> {
+  return await handleRequest("/dashboard/wedding/preferences", {
+    user_id,
+  });
+}
+
+export async function getWeddingPreferencesWedding({
+  wedding_id,
+}: {
+  wedding_id: number;
+}): Promise<any> {
+  try {
+    const axiosClient = await LaravelInstance();
+    const response = await axiosClient.get(`/dashboard/wedding/preferences/${wedding_id}`);
+
+    return response.data;
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    throw new Error(errorMessage);
+  }
+}
+
+export async function saveWeddingPreferences({
+  user_id,
+  wedding_id,
+  preferences,
+}: {
+  user_id: number;
+  wedding_id: number;
+  preferences: object;
+}): Promise<any> {
+  return await handleRequest("/dashboard/wedding/edit/preferences", {
+    user_id,
+    wedding_id,
+    preferences,
+  });
+}

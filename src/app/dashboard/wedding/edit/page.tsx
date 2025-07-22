@@ -1,5 +1,5 @@
 "use client";
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 import {
   Box,
@@ -17,26 +17,8 @@ import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/context/AuthProvider";
 import { getWeddingData, saveWeddingData } from "@/actions/clientsDashboard";
 import DashboardClientLayout from "@/layouts/DashboardClientLayout";
-import verses from "@/data/verses";
+import { getWeddingDataType } from "@/types/wedding";
 import { useTheme as useCustomTheme } from "@/context/theme-context";
-
-interface WeddingData {
-  groom_name: string;
-  groom_lastname: string;
-  bride_name: string;
-  bride_lastname: string;
-  wedding_date: string;
-  ceremony_time: string;
-  ceremony_place: string;
-  ceremony_city: string;
-  ceremony_maps: string;
-  party_time: string;
-  party_place: string;
-  party_city: string;
-  party_maps: string;
-  gift_type: string;
-  gift_details: string;
-}
 
 export default function EditWedding() {
   const { user } = useAuth();
@@ -44,7 +26,7 @@ export default function EditWedding() {
   const { showSuccess, showError } = useToast();
   const theme = useCustomTheme();
 
-  const [weddingData, setWeddingData] = useState<WeddingData>({
+  const [weddingData, setWeddingData] = useState<getWeddingDataType>({
     groom_name: "",
     groom_lastname: "",
     bride_name: "",
@@ -67,7 +49,7 @@ export default function EditWedding() {
 
   useEffect(() => {
     if (!user) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
     setIsAuthenticated(true);
@@ -170,7 +152,9 @@ export default function EditWedding() {
             p: 4,
             borderRadius: 2,
             bgcolor: theme.mode === "dark" ? "rgba(255,255,255,0.05)" : "#fff",
-            border: `1px solid ${theme.mode === "dark" ? "rgba(255,255,255,0.1)" : "#e0e0e0"}`,
+            border: `1px solid ${
+              theme.mode === "dark" ? "rgba(255,255,255,0.1)" : "#e0e0e0"
+            }`,
           }}
         >
           <Typography
@@ -194,7 +178,8 @@ export default function EditWedding() {
           </Typography>
 
           <form onSubmit={handleSubmit}>
-            {renderSection("Couple Information", (
+            {renderSection(
+              "Couple Information",
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
@@ -205,12 +190,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -226,12 +214,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -247,12 +238,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -268,12 +262,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -281,9 +278,10 @@ export default function EditWedding() {
                   />
                 </Grid>
               </Grid>
-            ))}
+            )}
 
-            {renderSection("Wedding Date", (
+            {renderSection(
+              "Wedding Date",
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <TextField
@@ -296,12 +294,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -309,9 +310,10 @@ export default function EditWedding() {
                   />
                 </Grid>
               </Grid>
-            ))}
+            )}
 
-            {renderSection("Ceremony Details", (
+            {renderSection(
+              "Ceremony Details",
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
@@ -324,12 +326,15 @@ export default function EditWedding() {
                     required
                     InputLabelProps={{ shrink: true }}
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -345,12 +350,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -366,12 +374,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -386,12 +397,15 @@ export default function EditWedding() {
                     onChange={handleChange}
                     fullWidth
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -399,9 +413,10 @@ export default function EditWedding() {
                   />
                 </Grid>
               </Grid>
-            ))}
+            )}
 
-            {renderSection("Reception Details", (
+            {renderSection(
+              "Reception Details",
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
@@ -414,12 +429,15 @@ export default function EditWedding() {
                     required
                     InputLabelProps={{ shrink: true }}
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -435,12 +453,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -456,12 +477,15 @@ export default function EditWedding() {
                     fullWidth
                     required
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -476,12 +500,15 @@ export default function EditWedding() {
                     onChange={handleChange}
                     fullWidth
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -489,9 +516,10 @@ export default function EditWedding() {
                   />
                 </Grid>
               </Grid>
-            ))}
+            )}
 
-            {renderSection("Gift Registry", (
+            {renderSection(
+              "Gift Registry",
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
@@ -501,12 +529,15 @@ export default function EditWedding() {
                     onChange={handleChange}
                     fullWidth
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -521,12 +552,15 @@ export default function EditWedding() {
                     onChange={handleChange}
                     fullWidth
                     sx={{
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         borderRadius: 1,
                       },
-                      '& .MuiInputLabel-root': {
-                        color: theme.mode === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
-                        '&.Mui-focused': {
+                      "& .MuiInputLabel-root": {
+                        color:
+                          theme.mode === "dark"
+                            ? "rgba(255,255,255,0.7)"
+                            : "rgba(0,0,0,0.6)",
+                        "&.Mui-focused": {
                           color: theme.mode === "dark" ? "#fff" : "#000",
                         },
                       },
@@ -534,9 +568,9 @@ export default function EditWedding() {
                   />
                 </Grid>
               </Grid>
-            ))}
+            )}
 
-            <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
               <Button
                 variant="contained"
                 type="submit"
@@ -544,11 +578,11 @@ export default function EditWedding() {
                   px: 4,
                   py: 1.5,
                   borderRadius: 2,
-                  textTransform: 'none',
-                  fontSize: '1rem',
-                  boxShadow: 'none',
-                  '&:hover': {
-                    boxShadow: 'none',
+                  textTransform: "none",
+                  fontSize: "1rem",
+                  boxShadow: "none",
+                  "&:hover": {
+                    boxShadow: "none",
                   },
                 }}
               >
@@ -556,62 +590,6 @@ export default function EditWedding() {
               </Button>
             </Box>
           </form>
-        </Paper>
-
-        <Paper
-          elevation={0}
-          sx={{
-            mt: 4,
-            p: 4,
-            borderRadius: 2,
-            bgcolor: theme.mode === "dark" ? "rgba(255,255,255,0.05)" : "#fff",
-            border: `1px solid ${theme.mode === "dark" ? "rgba(255,255,255,0.1)" : "#e0e0e0"}`,
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 600,
-              color: theme.mode === "dark" ? "#fff" : "#1a1a1a",
-              mb: 2,
-            }}
-          >
-            Wedding Verses
-          </Typography>
-          <Divider sx={{ mb: 3 }} />
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {verses.map((verse) => (
-              <Paper
-                key={verse.id}
-                elevation={0}
-                sx={{
-                  p: 3,
-                  borderRadius: 2,
-                  bgcolor: theme.mode === "dark" ? "rgba(255,255,255,0.05)" : "#f8f9fa",
-                  border: `1px solid ${theme.mode === "dark" ? "rgba(255,255,255,0.1)" : "#e0e0e0"}`,
-                }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: theme.mode === "dark" ? "#fff" : "#1a1a1a",
-                    mb: 1,
-                    fontSize: "1.1rem",
-                  }}
-                >
-                  {verse.verse}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: theme.mode === "dark" ? "#999" : "#666",
-                  }}
-                >
-                  {verse.reference}
-                </Typography>
-              </Paper>
-            ))}
-          </Box>
         </Paper>
       </Box>
     </DashboardClientLayout>
