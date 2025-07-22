@@ -12,29 +12,8 @@ import ImagesLayout3 from "@/components/Card/ImagesLayout3";
 import ImagesLayout4 from "@/components/Card/ImagesLayout4";
 import RSVPForm from "./Card/RSVPForm";
 import PoweredBy from "@/components/PowerBy";
-import { UserImage } from "@/actions/UploadImages";
 
-interface WeddingDetailsProps {
-  weddingDetails: {
-    wedding_date: string;
-    ceremony_time: string;
-    ceremony_place: string;
-    ceremony_city: string;
-    ceremony_maps: string;
-    party_time: string;
-    party_place: string;
-    party_city: string;
-    party_maps: string;
-    gift_type: string;
-    gift_details: string;
-  };
-  guest: {
-    name: string;
-    number_of_people: number;
-    number_of_kids: number;
-  };
-  images: UserImage[];
-}
+import { WeddingDetailsPropsType } from "@/types/wedding";
 
 const defaultImages = {
   layout2: ["/assets/img/Welcome.jpg", "/assets/img/Welcome2.jpg"],
@@ -62,7 +41,7 @@ export default function WeddingCard({
   weddingDetails,
   guest,
   images,
-}: WeddingDetailsProps) {
+}: WeddingDetailsPropsType) {
   const getLayoutImages = (layout: number, count: number): string[] => {
     if (!images || images.length === 0) {
       return (

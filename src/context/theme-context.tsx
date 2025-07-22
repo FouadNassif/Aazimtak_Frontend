@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useMemo } from "react";
+import React, { createContext, useContext, useState, useMemo, useEffect } from "react";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 
@@ -49,11 +49,33 @@ const darkTheme = createTheme({
 export const ThemeContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [mode, setMode] = useState<"light" | "dark">("light");
+  const [mode, setMode] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("themeMode");
+      if (saved === "dark" || saved === "light") return saved;
+    }
+    return "light";
+  });
 
   const toggleTheme = () => {
-    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+    setMode((prevMode) => {
+      const next = prevMode === "light" ? "dark" : "light";
+      if (typeof window !== "undefined") {
+        localStorage.setItem("themeMode", next);
+      }
+      return next;
+    });
   };
+
+  // Ensure mode is synced with localStorage on mount (for SSR/CSR consistency)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("themeMode");
+      if (saved && saved !== mode) {
+        setMode(saved === "dark" ? "dark" : "light");
+      }
+    }
+  }, []);
 
   const theme = useMemo(() => {
     return mode === "light" ? lightTheme : darkTheme;

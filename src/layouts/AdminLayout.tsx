@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { logout } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { Box } from "@mui/material";
+import { ThemeContextProvider } from "@/context/theme-context";
 
 const adminLinks = [
   { text: "Dashboard", link: "/admin/dashboard" },
@@ -30,18 +31,20 @@ export default function AdminLayout({ children }) {
   const router = useRouter();
 
   return (
-    <AuthLayout requiredRole="admin" >
-      <DashboardNavBase
-        title="Admin Panel"
-        username={user?.username}
-        links={adminLinks}
-        onLogout={async () => {
-          await logout();
-          router.push("/");
-        }}
-      >
-        <Box sx={{ p: 3 }}>{children}</Box>
-      </DashboardNavBase>
-    </AuthLayout>
+    <ThemeContextProvider>
+      <AuthLayout requiredRole="admin" >
+        <DashboardNavBase
+          title="Admin Panel"
+          username={user?.username}
+          links={adminLinks}
+          onLogout={async () => {
+            await logout();
+            router.push("/");
+          }}
+        >
+          <Box sx={{ p: 3 }}>{children}</Box>
+        </DashboardNavBase>
+      </AuthLayout>
+    </ThemeContextProvider>
   );
 }

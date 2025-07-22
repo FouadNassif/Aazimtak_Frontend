@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { Inter, Source_Code_Pro } from "next/font/google";
@@ -8,8 +8,8 @@ import "./main.css";
 import AuthProvider from "@/context/AuthProvider";
 import { checkAuth } from "@/actions/auth";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import the styles globally
-import { ThemeContextProvider } from "@/context/theme-context"; // Import the ThemeContextProvider
+import "react-toastify/dist/ReactToastify.css";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -32,11 +32,16 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+
       <body className={`${inter.variable} ${sourceCodePro.variable}`}>
         <AuthProvider isAuth={authenticated} user={user}>
-          <ThemeContextProvider>
-            {children}
-          </ThemeContextProvider>
+          {children}
           <ToastContainer
             position="top-right"
             autoClose={3500}

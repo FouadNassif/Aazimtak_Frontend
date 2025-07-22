@@ -1,7 +1,11 @@
 "use client";
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-import { getWeddingCardDetails } from "@/actions/wedding";
+import {
+  getWeddingCardDetails,
+  getWeddingPreferences,
+  getWeddingPreferencesWedding,
+} from "@/actions/wedding";
 import { Box } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -10,31 +14,7 @@ import Loading from "@/components/Loading";
 import WeddingCard from "@/components/WeddingCard";
 import ErrorMessage from "@/components/ErrorMessage";
 import { getAllUserImages, UserImage } from "@/actions/UploadImages";
-
-interface Wedding {
-  groom_name: string;
-  bride_name: string;
-}
-
-interface WeddingDetails {
-  wedding_date: string;
-  ceremony_time: string;
-  ceremony_place: string;
-  ceremony_city: string;
-  ceremony_maps: string;
-  party_time: string;
-  party_place: string;
-  party_city: string;
-  party_maps: string;
-  gift_type: string;
-  gift_details: string;
-}
-
-interface Guest {
-  name: string;
-  number_of_people: number;
-  number_of_kids: number;
-}
+import { WeddingType, WeddingDetailsType, GuestType } from "@/types/wedding";
 
 const GuestPage = () => {
   const params = useParams();
@@ -53,12 +33,14 @@ const GuestPage = () => {
     : null;
   const weddingIdNumber = wedding_id ? Number(wedding_id) : NaN;
 
-  const [wedding, setWedding] = useState<Wedding | null>(null);
-  const [weddingDetails, setWeddingDetails] = useState<WeddingDetails | null>(null);
-  const [guest, setGuest] = useState<Guest | null>(null);
+  const [wedding, setWedding] = useState<WeddingType | null>(null);
+  const [weddingDetails, setWeddingDetails] =
+    useState<WeddingDetailsType | null>(null);
+  const [guest, setGuest] = useState<GuestType | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<UserImage[]>([]);
+  const [preferences, setPreferences] = useState<any>(null);
 
   useEffect(() => {
     const getAllImages = async () => {
@@ -66,14 +48,30 @@ const GuestPage = () => {
         const response = await getAllUserImages(weddingIdNumber);
         if (response.success) {
           setImages(response.images);
-          console.log(images);
         }
       } catch (err) {
-        console.error('Error fetching images:', err);
+        console.error("Error fetching images:", err);
       }
     };
-  
+
     getAllImages();
+  }, [weddingIdNumber]);
+
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const response = await getWeddingPreferencesWedding({
+          wedding_id: weddingIdNumber,
+        });
+
+        if (response?.preferences) {
+          setPreferences(response.preferences);
+        }
+      } catch (error) {
+        console.error("Error fetching wedding preferences:", error);
+      }
+    };
+    fetchPreferences();
   }, [weddingIdNumber]);
 
   useEffect(() => {
@@ -102,7 +100,7 @@ const GuestPage = () => {
           setGuest(result.guest);
         }
       } catch (err) {
-        console.error('Error fetching wedding details:', err);
+        console.error("Error fetching wedding details:", err);
         setError("An error occurred while fetching wedding details");
       }
     };
@@ -117,7 +115,7 @@ const GuestPage = () => {
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        router.push("/"); 
+        router.push("/");
       }, 3000);
     }
   }, [error, router]);
@@ -137,9 +135,9 @@ const GuestPage = () => {
       {error ? (
         <ErrorMessage message={error} />
       ) : ready && weddingDetails && guest ? (
-        <WeddingCard 
-          weddingDetails={weddingDetails} 
-          guest={guest} 
+        <WeddingCard
+          weddingDetails={weddingDetails}
+          guest={guest}
           images={images}
         />
       ) : wedding && weddingDetails ? (
@@ -147,9 +145,10 @@ const GuestPage = () => {
           wedding={wedding}
           weddingDetails={weddingDetails}
           setReady={setReady}
+          preferences={preferences}
         />
       ) : (
-        <Loading />
+        <></>
       )}
     </Box>
   );

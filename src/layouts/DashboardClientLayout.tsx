@@ -6,6 +6,7 @@ import { logout } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { Box } from "@mui/material";
+import { ThemeContextProvider } from "@/context/theme-context";
 
 const DashboardClientLayout = ({ children }) => {
   const { user } = useAuth();
@@ -24,8 +25,8 @@ const DashboardClientLayout = ({ children }) => {
       text: "Wedding",
       subLinks: [
         { text: "Edit Wedding", link: "/dashboard/wedding/edit" },
+        { text: "Edit Wedding Card", link: "/dashboard/wedding/edit/card" },
         { text: "Edit Wedding Images", link: "/dashboard/wedding/edit/images" },
-        { text: "Show Wedding", link: "/dashboard/wedding/show" },
       ],
     },
     {
@@ -34,19 +35,21 @@ const DashboardClientLayout = ({ children }) => {
     },
   ];
   return (
-    <AuthLayout requiredRole="client">
-      <DashboardNavBase
-        title="Clients Panel"
-        username={user?.username}
-        links={links}
-        onLogout={async () => {
-          await logout();
-          router.push("/");
-        }}
-      >
-        <Box>{children}</Box>
-      </DashboardNavBase>
-    </AuthLayout>
+    <ThemeContextProvider>
+      <AuthLayout requiredRole="client">
+        <DashboardNavBase
+          title="Clients Panel"
+          username={user?.username}
+          links={links}
+          onLogout={async () => {
+            await logout();
+            router.push("/");
+          }}
+        >
+          <Box>{children}</Box>
+        </DashboardNavBase>
+      </AuthLayout>
+    </ThemeContextProvider>
   );
 };
 
